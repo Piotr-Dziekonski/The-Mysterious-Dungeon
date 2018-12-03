@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1628839637027996}
+  m_IsPrefabAsset: 1
+--- !u!1 &1628839637027996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4653470789332682}
+  - component: {fileID: 114228252952454554}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4653470789332682
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1628839637027996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114228252952454554
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1628839637027996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03f28bc868c1d1488ee246e6c038c1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - clip: {fileID: 8300000, guid: 137dfb9781bfb6d419010500544f92b5, type: 3}
+    name: PlayerWalk
+    volume: 0.09
+    pitch: 1.11
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: d5a2586995e5f6b48b7ce13fdae67c1d, type: 3}
+    name: ZoneTheme
+    volume: 0.024
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 1c81495de8b86af448f9d625df27efd5, type: 3}
+    name: LeverPull
+    volume: 0.024
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: b0daac870c92aa34589cabaca8115e26, type: 3}
+    name: KeyPickUp
+    volume: 0.024
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 661e324d4cf956a40999d5cdd8348247, type: 3}
+    name: BlockPush
+    volume: 0.004
+    pitch: 0.72
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: d0f4a30f384ec6848ae680b490b05d25, type: 3}
+    name: ButtonClick
+    volume: 0.048
+    pitch: 1.1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 2eb97df89728ad7428253052a192cba1, type: 3}
+    name: ExitSound
+    volume: 0.048
+    pitch: 1.1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 3289ef6df65adc0459c4ca44c3615816, type: 3}
+    name: DoorUnlock
+    volume: 0.048
+    pitch: 1.52
+    loop: 0
+    source: {fileID: 0}
