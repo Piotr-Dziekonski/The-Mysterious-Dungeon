@@ -213,7 +213,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000005066395, y: -131.2}
+  m_AnchoredPosition: {x: -16, y: -132}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &533060743
@@ -488,6 +488,7 @@ GameObject:
   - component: {fileID: 984397774}
   - component: {fileID: 984397773}
   - component: {fileID: 984397772}
+  - component: {fileID: 984397776}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -523,7 +524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
+  m_ReferencePixelsPerUnit: 1
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
@@ -575,6 +576,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &984397776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 984397771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5b1defd17ffc5a48a92483fffc00395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  newGame: {fileID: 1919655140}
+  loadGame: {fileID: 533060743}
+  exit: {fileID: 1920558117}
 --- !u!1 &1074276768
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,7 +657,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Load Game
+  m_Text: Continue
 --- !u!222 &1074276771
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -985,7 +1000,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -98}
+  m_AnchoredPosition: {x: -16, y: -98}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1919655140
@@ -1097,7 +1112,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000005066395, y: -164.7}
+  m_AnchoredPosition: {x: -16.000002, y: -166}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1920558117
@@ -1186,7 +1201,7 @@ GameObject:
   - component: {fileID: 1932521001}
   - component: {fileID: 1932521000}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Dungeon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1207,8 +1222,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 145}
-  m_SizeDelta: {x: 397.4, y: 122.6}
+  m_AnchoredPosition: {x: -13, y: 141}
+  m_SizeDelta: {x: 637.5, y: 196.66}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1932521000
 MonoBehaviour:
@@ -1242,7 +1257,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: A Dungeon
+  m_Text: A Mysterious Dungeon
 --- !u!222 &1932521001
 CanvasRenderer:
   m_ObjectHideFlags: 0

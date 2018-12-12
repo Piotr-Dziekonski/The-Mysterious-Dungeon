@@ -12,7 +12,7 @@ public class LeverController : MonoBehaviour {
 
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         animator = GetComponent<Animator>();
         stateOn = false;
         wasPulled = false;
@@ -82,7 +82,7 @@ public class LeverController : MonoBehaviour {
             {
                 if (hit.collider.GetComponent<PlayerMovement>().isMoving == false)
                 {
-                    if (Input.GetKey("d"))
+                    if (Input.GetAxisRaw("Horizontal") > 0)
                     {
                         if (direction == "LEFT")
                         {
@@ -91,7 +91,7 @@ public class LeverController : MonoBehaviour {
                             leverCooldown = GameController.buttonCooldown;
                         }
                     }
-                    else if (Input.GetKey("a"))
+                    else if (Input.GetAxisRaw("Horizontal") < 0)
                     {
                         if (direction == "RIGHT")
                         {
@@ -100,7 +100,7 @@ public class LeverController : MonoBehaviour {
                             leverCooldown = GameController.buttonCooldown;
                         }
                     }
-                    else if (Input.GetKey("w"))
+                    else if (Input.GetAxisRaw("Vertical") > 0)
                     {
                         if (direction == "DOWN")
                         {
@@ -109,7 +109,7 @@ public class LeverController : MonoBehaviour {
                             leverCooldown = GameController.buttonCooldown;
                         }
                     }
-                    else if (Input.GetKey("s"))
+                    else if (Input.GetAxisRaw("Vertical") < 0)
                     {
                         if (direction == "UP")
                         {

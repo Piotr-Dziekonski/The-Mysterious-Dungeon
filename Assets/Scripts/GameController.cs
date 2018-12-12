@@ -1,17 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
+[System.Serializable]
 public class GameController : MonoBehaviour {
 
-    public static ArrayList allPlayers;
-    public static ArrayList allButtons;
-    public static ArrayList allGates;
-    public static ArrayList allArrows;
-    public static ArrayList allBlocks;
+    public static ArrayList allPlayers = new ArrayList();
+    public static ArrayList allButtons = new ArrayList();
+    //public static ArrayList allGates = new ArrayList();
+    public static ArrayList allArrows = new ArrayList();
+    public static ArrayList allBlocks = new ArrayList();
+    public static ArrayList allLevers = new ArrayList();
+    public static ArrayList allCounters = new ArrayList();
+    public static ArrayList allDoors = new ArrayList();
+    public static ArrayList allItems = new ArrayList();
+    public static ArrayList allEyeballs = new ArrayList();
 
+    public static bool[] completedLevels = new bool[11]; // 10 levels + boss level
+    public static int activeLevelNumber;
 
     public static float speed = 4.5f;
     public static GameController instance;
@@ -21,7 +32,9 @@ public class GameController : MonoBehaviour {
     public static ItemController.ItemType[] inventory = new ItemController.ItemType[10];
     public GameObject completeLevelUI;
 
-    public ItemController.ItemType[] currentInv;
+    //public ItemController.ItemType[] currentInv;
+
+    private static SaveData dataToLoad;
 
 	// Use this for initialization
 	void Awake () {
@@ -34,47 +47,65 @@ public class GameController : MonoBehaviour {
             Destroy(gameObject);
         }
 
-    allPlayers = new ArrayList(GameObject.FindGameObjectsWithTag("Player"));
-    allButtons = new ArrayList(GameObject.FindGameObjectsWithTag("Button"));
-    allGates = new ArrayList(GameObject.FindGameObjectsWithTag("Gate"));
-    allArrows = new ArrayList(GameObject.FindGameObjectsWithTag("Arrow"));
-    allBlocks = new ArrayList(GameObject.FindGameObjectsWithTag("Block"));
+        allPlayers = new ArrayList(GameObject.FindGameObjectsWithTag("Player"));
+        allButtons = new ArrayList(GameObject.FindGameObjectsWithTag("Button"));
+        //allGates = new ArrayList(GameObject.FindGameObjectsWithTag("Gate"));
+        allArrows = new ArrayList(GameObject.FindGameObjectsWithTag("Arrow"));
+        allBlocks = new ArrayList(GameObject.FindGameObjectsWithTag("Block"));
+        allLevers = new ArrayList(GameObject.FindGameObjectsWithTag("Lever"));
+        allCounters = new ArrayList(GameObject.FindGameObjectsWithTag("Counter"));
+        allDoors = new ArrayList(GameObject.FindGameObjectsWithTag("Door"));
+        allItems = new ArrayList(GameObject.FindGameObjectsWithTag("Item"));
+        allEyeballs = new ArrayList(GameObject.FindGameObjectsWithTag("Eyeball"));
+        //completedLevels = new bool[11];
 
-
-}
+    }
 
     // Update is called once per frame
     void Update () {
-        
-        
+
+
         CheckCollisions();
-        if (Input.GetKey("w") && !cooldown)
+        if (Input.GetAxisRaw("Vertical") > 0 && !cooldown)
         {
             cooldown = true;
             SetNewPositions(Vector3.up);
         }
-        else if (Input.GetKey("a") && !cooldown)
+        else if (Input.GetAxisRaw("Horizontal") < 0 && !cooldown)
         {
             cooldown = true;
             SetNewPositions(Vector3.left);
         }
-        else if (Input.GetKey("s") && !cooldown)
+        else if (Input.GetAxisRaw("Vertical") < 0 && !cooldown)
         {
             cooldown = true;
             SetNewPositions(Vector3.down);
         }
-        else if (Input.GetKey("d") && !cooldown)
+        else if (Input.GetAxisRaw("Horizontal") > 0 && !cooldown)
         {
             cooldown = true;
             SetNewPositions(Vector3.right);
         }
-
+        else if (Input.GetKey("r"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        else if (Input.GetKeyDown("["))
+        {
+            SaveGame();
+        }
+        else if (Input.GetKeyDown("]"))
+        {
+            LoadGame();
+        }
+        Invoke("SetNewNPCPositions", Random.Range(0.75f, 1f));
+            
         MoveObjects();
 
 
 
 
-        currentInv = inventory;
+        //currentInv = inventory;
 
         if (cooldown)
         {
@@ -82,6 +113,28 @@ public class GameController : MonoBehaviour {
         }
 
     }
+
+    private void SetNewNPCPositions()
+    {
+        foreach (GameObject o in allEyeballs)
+        {
+            EyeballController eyeballController = o.GetComponent<EyeballController>();
+            if (eyeballController.isMoving == false && !eyeballController.playerInRange && !eyeballController.turningCRRunning)
+            {
+                Vector3 newPos = Tools.VectorToMoveEyeball(eyeballController);
+                if(newPos != new Vector3())
+                {
+                    eyeballController.isMoving = true;
+                    eyeballController.newPos += newPos;
+                    //Debug.Log(eyeballController.newPos);
+                }
+                
+            }
+            
+        }
+        CancelInvoke();
+    }
+
     public void MoveObjects()
     {
         for (int i = allBlocks.Count - 1; i >= 0; i--)
@@ -90,18 +143,18 @@ public class GameController : MonoBehaviour {
             BlockController blockController = o.GetComponent<BlockController>();
             if (blockController.isMoving)
             {
-                if (blockController.transform.position == blockController.pos)
+                if (blockController.transform.position == blockController.newPos)
                 {
                     blockController.isMoving = false;
                 }
                 else
                 {
-                    blockController.transform.position = Vector3.MoveTowards(blockController.transform.position, blockController.pos, Time.deltaTime * speed);
+                    blockController.transform.position = Vector3.MoveTowards(blockController.transform.position, blockController.newPos, Time.deltaTime * speed);
                 }
             }
             else
             {
-                blockController.pos = blockController.transform.position;
+                blockController.newPos = blockController.transform.position;
             }
         }
         for (int i = allPlayers.Count - 1; i >= 0; i--)
@@ -110,21 +163,41 @@ public class GameController : MonoBehaviour {
             PlayerMovement playerMovement = o.GetComponent<PlayerMovement>();
             if (playerMovement.isMoving)
             {
-                if (playerMovement.transform.position == playerMovement.pos)
+                if (playerMovement.transform.position == playerMovement.newPos)
                 {
                     playerMovement.isMoving = false;
                 }
                 else
                 {
-                    playerMovement.transform.position = Vector3.MoveTowards(playerMovement.transform.position, playerMovement.pos, Time.deltaTime * speed);
+                    playerMovement.transform.position = Vector3.MoveTowards(playerMovement.transform.position, playerMovement.newPos, Time.deltaTime * speed);
                 }
             }
             else
             {
-                playerMovement.pos = playerMovement.transform.position;
+                playerMovement.newPos = playerMovement.transform.position;
             }
         }
-        
+        for (int i = allEyeballs.Count - 1; i >= 0; i--)
+        {
+            GameObject o = (GameObject)allEyeballs[i];
+            EyeballController eyeballController = o.GetComponent<EyeballController>();
+            if (eyeballController.isMoving)
+            {
+                if (eyeballController.transform.position == eyeballController.newPos)
+                {
+                    eyeballController.isMoving = false;
+                }
+                else
+                {
+                    eyeballController.transform.position = Vector3.MoveTowards(eyeballController.transform.position, eyeballController.newPos, Time.deltaTime * speed);
+                }
+            }
+            else
+            {
+                eyeballController.newPos = eyeballController.transform.position;
+            }
+        }
+
     }
     public void CheckUnder(GameObject obj)
     {
@@ -160,6 +233,28 @@ public class GameController : MonoBehaviour {
                             if (allPlayers.Count == 1 && GameController.instance.levelCompleted == false)
                             {
                                 GameController.instance.LevelCompleted();
+                            }
+                            if (obj.transform.localScale.x <= 0)
+                            {
+                                Destroy(obj);
+                                allPlayers.Remove(obj);
+                            }
+                            break;
+                        case "LevelEntrance":
+                            if (playerCollision.finished == false)
+                            {
+                                playerCollision.allowFinishSound = true;
+                            }
+                            playerCollision.finished = true;
+
+                            obj.transform.localScale -= new Vector3(1.1f * Time.fixedDeltaTime, 1.1f * Time.fixedDeltaTime, 0);
+
+                            if (allPlayers.Count == 1)
+                            {
+                                //Debug.Log(objectUnder.GetComponent<LevelEntranceController>().level.name);
+                                LevelEntranceController entrance = objectUnder.GetComponent<LevelEntranceController>();
+                                activeLevelNumber = entrance.levelNumber;
+                                SceneManager.LoadScene(entrance.levelName);
                             }
                             if (obj.transform.localScale.x <= 0)
                             {
@@ -296,7 +391,30 @@ public class GameController : MonoBehaviour {
             blockController.playerOnDown = Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref blockController.canMoveDown);
             CheckUnder(o);
         }
-        
+        for (int i = allEyeballs.Count - 1; i >= 0; i--)
+        {
+            
+            GameObject o = (GameObject)allEyeballs[i];
+            EyeballController eyeballController = o.GetComponent<EyeballController>();
+            //CheckUnder(o);
+            bool nothing = false;
+            eyeballController.playerOnLeft = Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 20f, DirectionFacing.LEFT, ref nothing);
+            eyeballController.playerOnRight = Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 20f, DirectionFacing.RIGHT, ref nothing);
+            eyeballController.playerOnUp = Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 20f, DirectionFacing.UP, ref nothing);
+            eyeballController.playerOnDown = Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 20f, DirectionFacing.DOWN, ref nothing);
+            eyeballController.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1,1), 0.5f, new DirectionFacing(), ref nothing);
+            eyeballController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, new DirectionFacing(), ref nothing);
+            eyeballController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, new DirectionFacing(), ref nothing);
+            eyeballController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, new DirectionFacing(), ref nothing);
+            
+
+            Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref eyeballController.canMoveLeft);
+            Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref eyeballController.canMoveRight);
+            Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref eyeballController.canMoveUp);
+            Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref eyeballController.canMoveDown);
+            //CheckUnder(o);
+        }
+
     }
     public void SetNewPositions(Vector3 movVec)
     {
@@ -326,8 +444,8 @@ public class GameController : MonoBehaviour {
             }
             if (condition)
             {
-                o.GetComponent<PlayerMovement>().isMoving = true;
-                o.GetComponent<PlayerMovement>().pos += movVec;
+                playerCollision.playerMovement.isMoving = true;
+                playerCollision.playerMovement.newPos += movVec;
             }
             
         }
@@ -344,10 +462,11 @@ public class GameController : MonoBehaviour {
             if (condition)
             {
                 blockController.isMoving = true;
-                blockController.pos += movVec;
+                blockController.newPos += movVec;
             }
         }
-            
+        
+
 
 
 
@@ -375,6 +494,192 @@ public class GameController : MonoBehaviour {
         //Debug.Log("LEVEL COMPLETED");
         completeLevelUI.SetActive(true);
         levelCompleted = true;
+        completedLevels[activeLevelNumber] = true;
         
+    }
+    public static void SaveGame()
+    {
+        if(dataToLoad != null)
+        {
+            dataToLoad = null;
+        }
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/save.gd");
+
+        SaveData data = new SaveData
+        {
+            scene = SceneManager.GetActiveScene().buildIndex,
+            allPlayers_position = new float[allPlayers.Count][],
+            allPlayers_newPos = new float[allPlayers.Count][],
+            allPlayers_movementVector = new float[allPlayers.Count][],
+            allPlayers_isMoving = new bool[allPlayers.Count],
+            allPlayers_directionFacing = new DirectionFacing[allPlayers.Count],
+            allButtons_pressed = new bool[allButtons.Count],
+            allLevers_stateOn = new bool[allLevers.Count],
+            allBlocks_position = new float[allBlocks.Count][],
+            allBlocks_newPos = new float[allBlocks.Count][],
+            allBlocks_movementVector = new float[allBlocks.Count][],
+            allBlocks_isMoving = new bool[allBlocks.Count],
+            allCounters_enabled = new bool[allCounters.Count],
+            allDoors_enabled = new bool[allDoors.Count],
+            inventory = new ItemController.ItemType[10],
+            allItems_enabled = new bool[allItems.Count],
+            completedLevels = new bool[completedLevels.Length],
+            //allGates_enabled = new bool[allGates.Count]
+        };
+
+        // adding infomation to savadata object
+        data.inventory = inventory;
+        data.completedLevels = completedLevels;
+        for (int i = 0; i < allPlayers.Count; i++)
+        {
+            GameObject player = (GameObject)allPlayers[i];
+            PlayerCollision playerCollision = player.GetComponent<PlayerCollision>();
+            PlayerMovement playerMovement = playerCollision.playerMovement;
+
+            data.allPlayers_position[i] = Tools.Vector3ToFloatArray(player.transform.localPosition);
+            data.allPlayers_newPos[i] = Tools.Vector3ToFloatArray(playerMovement.newPos);
+            data.allPlayers_movementVector[i] = Tools.Vector3ToFloatArray(playerMovement.movementVec);
+            data.allPlayers_isMoving[i] = playerMovement.isMoving;
+        }
+        for (int i = 0; i < allButtons.Count; i++)
+        {
+            GameObject button = (GameObject)allButtons[i];
+            ButtonController buttonController = button.GetComponent<ButtonController>();
+
+            data.allButtons_pressed[i] = buttonController.pressed;
+        }
+        for (int i = 0; i < allLevers.Count; i++)
+        {
+            GameObject lever = (GameObject)allLevers[i];
+            LeverController leverController = lever.GetComponent<LeverController>();
+
+            data.allLevers_stateOn[i] = leverController.stateOn;
+        }
+        for (int i = 0; i < allBlocks.Count; i++)
+        {
+            GameObject block = (GameObject)allBlocks[i];
+            BlockController blockController = block.GetComponent<BlockController>();
+
+            data.allBlocks_position[i] = Tools.Vector3ToFloatArray(block.transform.localPosition);
+            data.allBlocks_newPos[i] = Tools.Vector3ToFloatArray(blockController.newPos);
+            data.allBlocks_movementVector[i] = Tools.Vector3ToFloatArray(blockController.movementVec);
+            data.allBlocks_isMoving[i] = blockController.isMoving;
+        }
+        for (int i = 0; i < allCounters.Count; i++)
+        {
+            GameObject counter = (GameObject)allCounters[i];
+
+            data.allCounters_enabled[i] = counter.activeSelf;
+        }
+        for (int i = 0; i < allDoors.Count; i++)
+        {
+            GameObject door = (GameObject)allDoors[i];
+
+            data.allDoors_enabled[i] = door.activeSelf;
+        }
+        /*for (int i = 0; i < allGates.Count; i++)
+        {
+            GameObject gate = (GameObject)allGates[i];
+            
+            data.allGates_enabled[i] = gate.activeSelf;
+        }*/
+        for (int i = 0; i < allItems.Count; i++)
+        {
+            GameObject item = (GameObject)allItems[i];
+
+            data.allItems_enabled[i] = item.activeSelf;
+        }
+        
+
+
+
+        bf.Serialize(file, data);
+        file.Close();
+    }
+    public static void LoadGame()
+    {
+        if (File.Exists(Application.persistentDataPath + "/save.gd"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/save.gd", FileMode.Open);
+            dataToLoad = (SaveData)bf.Deserialize(file);
+            file.Close();
+
+            SceneManager.LoadScene(dataToLoad.scene);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+    }
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        inventory = dataToLoad.inventory;
+        completedLevels = dataToLoad.completedLevels;
+        for (int i = 0; i < dataToLoad.allPlayers_position.Length; i++)
+        {
+            GameObject player = (GameObject)allPlayers[i];
+            PlayerCollision playerCollision = player.GetComponent<PlayerCollision>();
+            PlayerMovement playerMovement = playerCollision.playerMovement;
+
+            Vector3 position = Tools.FloatArrayToVector3(dataToLoad.allPlayers_position[i]);
+            Vector3 newPos = Tools.FloatArrayToVector3(dataToLoad.allPlayers_newPos[i]);
+            Vector3 movementVec = Tools.FloatArrayToVector3(dataToLoad.allPlayers_movementVector[i]);
+            bool isMoving = dataToLoad.allPlayers_isMoving[i];
+
+            player.transform.localPosition = position;
+            playerMovement.newPos = newPos;
+            playerMovement.movementVec = movementVec;
+            playerMovement.isMoving = isMoving;
+            //Debug.Log(position);
+            //Debug.Log(newPos);
+        }
+        for (int i = 0; i < dataToLoad.allButtons_pressed.Length; i++)
+        {
+            GameObject button = (GameObject)allButtons[i];
+            button.GetComponent<ButtonController>().pressed = dataToLoad.allButtons_pressed[i];
+        }
+        for (int i = 0; i < dataToLoad.allLevers_stateOn.Length; i++)
+        {
+            GameObject lever = (GameObject)allLevers[i];
+            lever.GetComponent<LeverController>().stateOn = dataToLoad.allLevers_stateOn[i];
+        }
+        for (int i = 0; i < dataToLoad.allBlocks_position.Length; i++)
+        {
+            GameObject block = (GameObject)allBlocks[i];
+            BlockController blockController = block.GetComponent<BlockController>();
+
+            Vector3 position = Tools.FloatArrayToVector3(dataToLoad.allBlocks_position[i]);
+            Vector3 newPos = Tools.FloatArrayToVector3(dataToLoad.allBlocks_newPos[i]);
+            Vector3 movementVec = Tools.FloatArrayToVector3(dataToLoad.allBlocks_movementVector[i]);
+            bool isMoving = dataToLoad.allBlocks_isMoving[i];
+
+            block.transform.localPosition = position;
+            blockController.newPos = newPos;
+            blockController.movementVec = movementVec;
+            blockController.isMoving = isMoving;
+            //Debug.Log(position);
+            //Debug.Log(newPos);
+        }
+        for (int i = 0; i < dataToLoad.allCounters_enabled.Length; i++)
+        {
+            GameObject counter = (GameObject)allCounters[i];
+            counter.SetActive(dataToLoad.allCounters_enabled[i]);
+        }
+        for (int i = 0; i < dataToLoad.allDoors_enabled.Length; i++)
+        {
+            GameObject door = (GameObject)allDoors[i];
+            door.SetActive(dataToLoad.allDoors_enabled[i]);
+        }
+        /*for (int i = 0; i < dataToLoad.allGates_enabled.Length; i++)
+        {
+            GameObject gate = (GameObject)allGates[i];
+            gate.SetActive(dataToLoad.allGates_enabled[i]);
+        }*/
+        for (int i = 0; i < dataToLoad.allItems_enabled.Length; i++)
+        {
+            GameObject item = (GameObject)allItems[i];
+            item.SetActive(dataToLoad.allItems_enabled[i]);
+        }
+        dataToLoad = null;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

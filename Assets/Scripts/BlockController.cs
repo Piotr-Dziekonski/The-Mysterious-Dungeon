@@ -10,8 +10,7 @@ public class BlockController : MonoBehaviour
     public bool canMoveRight, canMoveLeft, canMoveUp, canMoveDown;
     public GameObject targetUnderBlock;
     public bool isMoving;
-    public bool isBeingPushed;
-    public Vector3 pos, movementVec;
+    public Vector3 newPos, movementVec;
     public bool isAround;
     public GameObject playerOnLeft, playerOnRight, playerOnUp, playerOnDown;
 

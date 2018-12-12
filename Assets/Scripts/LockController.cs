@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class LockController : MonoBehaviour {
 
-    public GameObject[] connectedButtons;
-    public GameObject[] connectedBlockTargets;
+    public GameObject[] connectedButtons, connectedBlockTargets, connectedEntrances;
     public int buttonsPressed = 0;
     public bool disappearOnZero;
     public GameObject elementToSetActive;
     private Animator animator;
+    public GateController[] gatesToOpen;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         animator = GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         buttonsPressed = 0;
+        foreach (GameObject g in connectedEntrances)
+        {
+            if(g.GetComponent<LevelEntranceController>().completed)
+            {
+                buttonsPressed++;
+            }
+        }
         foreach (GameObject g in connectedButtons)
         {
             if(g.GetComponent<ButtonController>().pressed)
@@ -27,28 +34,42 @@ public class LockController : MonoBehaviour {
             }
         }
 
-            foreach (GameObject g in connectedBlockTargets)
+        foreach (GameObject g in connectedBlockTargets)
+        {
+            if (g.GetComponent<TargetController>().pressed)
             {
-                if (g.GetComponent<TargetController>().pressed)
-                {
-                    buttonsPressed++;
-                }
+                buttonsPressed++;
             }
+        }
         
         
-        if (buttonsPressed == connectedButtons.Length + connectedBlockTargets.Length)
+        if (buttonsPressed == connectedButtons.Length + connectedBlockTargets.Length + connectedEntrances.Length)
         {
             if (disappearOnZero)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+                //Destroy(gameObject);
 
             }
             if (elementToSetActive != null)
             {
                 elementToSetActive.SetActive(true);
+                
+            }
+            if (gatesToOpen.Length > 0)
+            {
+                foreach(GateController gate in gatesToOpen)
+                {
+                    gate.isOpen = true;
+                }
+                
+
             }
 
         }
-        animator.SetInteger("count", connectedButtons.Length + connectedBlockTargets.Length - buttonsPressed);
+        if (gameObject.activeSelf)
+        {
+            animator.SetInteger("count", connectedButtons.Length + connectedBlockTargets.Length + connectedEntrances.Length - buttonsPressed);
+        }
 	}
 }

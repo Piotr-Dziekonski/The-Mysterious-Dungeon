@@ -9,14 +9,14 @@ public class PlayerCollision : MonoBehaviour
     public GameObject buttonUnderPlayer;
     public bool isExiting = false;
     public bool finished = false;
-    private PlayerMovement playerMovement;
+    public PlayerMovement playerMovement;
     public CircleCollider2D playerCollider;
     public GameObject playerOnLeft, playerOnRight, playerOnUp, playerOnDown;
     [HideInInspector]
     public DirectionFacing directionFacing = DirectionFacing.RIGHT;
     private Animator animator;
 
-    void Start()
+    void Awake()
     {
         canMoveRight = true;
         canMoveLeft = true;

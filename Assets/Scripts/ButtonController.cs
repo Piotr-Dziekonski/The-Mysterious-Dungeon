@@ -10,7 +10,7 @@ public class ButtonController : MonoBehaviour {
     public bool allowSound = false;
     
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         animator = GetComponent<Animator>();
 	}
 	

@@ -77,7 +77,8 @@ public class AudioManager : MonoBehaviour
             {
                 if(item.GetComponent<SpriteRenderer>().enabled == false)
                 {
-                    Destroy(item);
+                    //Destroy(item);
+                    item.SetActive(false);
                 }
                 GetComponent<AudioManager>().Play("KeyPickUp");
                 item.GetComponent<SpriteRenderer>().enabled = false;
@@ -87,7 +88,7 @@ public class AudioManager : MonoBehaviour
         gameObjects = GameObject.FindGameObjectsWithTag("Block");
         foreach (GameObject block in gameObjects)
         {
-            if (block.GetComponent<BlockController>().isBeingPushed && !GetComponent<AudioManager>().IsAlreadyPlaying("BlockPush"))
+            if (block.GetComponent<BlockController>().isMoving && !GetComponent<AudioManager>().IsAlreadyPlaying("BlockPush"))
             {
                 GetComponent<AudioManager>().Play("BlockPush");
                 break;
@@ -117,7 +118,8 @@ public class AudioManager : MonoBehaviour
             {
                 if (door.GetComponent<SpriteRenderer>().enabled == false)
                 {
-                    Destroy(door);
+                    //Destroy(door);
+                    door.SetActive(false);
                 }
                 GetComponent<AudioManager>().Play("DoorUnlock");
                 door.GetComponent<SpriteRenderer>().enabled = false;
