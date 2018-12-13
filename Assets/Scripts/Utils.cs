@@ -6,7 +6,7 @@ using System;
 using UnityEngine;
 
 namespace Utils{
-    public enum DirectionFacing { RIGHT, LEFT, UP, DOWN }
+    public enum DirectionFacing { NONE, RIGHT, LEFT, UP, DOWN }
     /*public static class GameObjectExtension
     {
         public static class defaultController { get; set; };
@@ -24,7 +24,7 @@ namespace Utils{
             var topLeftEntity = controller.entityOnTopLeft;
             var bottomRightEntity = controller.entityOnBottomRight;
             var bottomLeftEntity = controller.entityOnBottomLeft;
-            var entityNewPos = new Vector3();
+            var entityNewPos = new Vector3(0,0,0);
 
             if (topRightEntity != null)
             {
@@ -60,7 +60,7 @@ namespace Utils{
             controller.canMoveLeft = controller.canMoveLeft && entityNewPos != controller.transform.localPosition + Vector3.left;
             controller.canMoveUp = controller.canMoveUp && entityNewPos != controller.transform.localPosition + Vector3.up;
             controller.canMoveDown = controller.canMoveDown && entityNewPos != controller.transform.localPosition + Vector3.down;
-            Debug.Log(controller.name + entityNewPos);
+            //Debug.Log(controller.name + entityNewPos);
             int rnd = UnityEngine.Random.Range(0, 100);
             Vector3 movDir = new Vector3();
             bool canMoveToPickedDir = false;
@@ -106,22 +106,18 @@ namespace Utils{
             }
             else if(rnd < 70 && controller.canMoveLeft && controller.prevDirection != DirectionFacing.LEFT)
             {
-                controller.directionFacing = DirectionFacing.LEFT;
                 return Vector3.left;
             }
             else if(rnd < 80 && controller.canMoveRight && controller.prevDirection != DirectionFacing.RIGHT)
             {
-                controller.directionFacing = DirectionFacing.RIGHT;
                 return Vector3.right;
             }
             else if(rnd < 90 && controller.canMoveUp && controller.prevDirection != DirectionFacing.UP)
             {
-                controller.directionFacing = DirectionFacing.UP;
                 return Vector3.up;
             }
             else if(controller.canMoveDown && controller.prevDirection != DirectionFacing.DOWN)
             {
-                controller.directionFacing = DirectionFacing.DOWN;
                 return Vector3.down;
             }
             else
@@ -132,28 +128,24 @@ namespace Utils{
                     case 0:
                         if (controller.canMoveLeft)
                         {
-                            controller.directionFacing = DirectionFacing.LEFT;
                             return Vector3.left;
                         }
                         break;
                     case 1:
                         if (controller.canMoveRight)
                         {
-                            controller.directionFacing = DirectionFacing.RIGHT;
                             return Vector3.right;
                         }
                         break;
                     case 2:
                         if (controller.canMoveUp)
                         {
-                            controller.directionFacing = DirectionFacing.UP;
                             return Vector3.up;
                         }
                         break;
                     case 3:
                         if (controller.canMoveDown)
                         {
-                            controller.directionFacing = DirectionFacing.DOWN;
                             return Vector3.down;
                         }   
                         break;
@@ -244,7 +236,7 @@ namespace Utils{
             startCast.y = objectCurrentPos.y + offsetY;
 
             RaycastHit2D[] hit = Physics2D.RaycastAll(startCast, direction, distance);
-            if(transform.tag == "Eyeball")
+            
             
             if (hit.Length > 0)
             {
@@ -383,7 +375,7 @@ namespace Utils{
 
 
                     }
-                    else if (hit[i].collider.tag == "Eyeball" && transform.gameObject.tag == "Eyeball" && directionToCheck == new DirectionFacing())
+                    else if (hit[i].collider.tag == "Eyeball" && transform.gameObject.tag == "Eyeball" && directionToCheck == DirectionFacing.NONE)
                     {
                         return hit[i].collider.gameObject;
                     }

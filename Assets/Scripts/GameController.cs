@@ -98,8 +98,9 @@ public class GameController : MonoBehaviour {
         {
             LoadGame();
         }
-        Invoke("SetNewNPCPositions", Random.Range(0.75f, 1f));
-            
+        SetNewNPCPositions();
+
+
         MoveObjects();
 
 
@@ -121,20 +122,60 @@ public class GameController : MonoBehaviour {
             EyeballController eyeballController = o.GetComponent<EyeballController>();
             if (eyeballController.isMoving == false && !eyeballController.playerInRange && !eyeballController.turningCRRunning)
             {
-                Vector3 newPos = Tools.VectorToMoveEyeball(eyeballController);
-                if(newPos != new Vector3())
+                
+                if(!eyeballController.moveCRRunning && !eyeballController.turningCRRunning)
                 {
-                    eyeballController.isMoving = true;
-                    eyeballController.newPos += newPos;
+
+                    //Debug.Log("lol");
+                    eyeballController.moveCRRunning = true;
+                    StartCoroutine(SetNewPosAfterCooldown(eyeballController, Random.Range(eyeballController.movementMinDelay, eyeballController.movementMaxDelay)));
+                    //Invoke("SetNewPosAfterCooldown", Random.Range(1,4));
+                    //eyeballController.isMoving = true;
+                    //eyeballController.newPos += newPos;
                     //Debug.Log(eyeballController.newPos);
                 }
                 
             }
             
         }
-        CancelInvoke();
     }
+    private IEnumerator SetNewPosAfterCooldown(EyeballController controller, Vector3 newPos, float delay)
+    {
+        
+        yield return new WaitForSeconds(delay);
+        if (!controller.turningCRRunning)
+        {
+            if (newPos == Vector3.up) { controller.directionFacing = DirectionFacing.UP; }
+            else if (newPos == Vector3.down) { controller.directionFacing = DirectionFacing.DOWN; }
+            else if(newPos == Vector3.left) { controller.directionFacing = DirectionFacing.LEFT; }
+            else if(newPos == Vector3.right) { controller.directionFacing = DirectionFacing.RIGHT; }
+            controller.isMoving = true;
+            controller.newPos += newPos;
 
+            
+        }
+        controller.moveCRRunning = false;
+
+    }
+    private IEnumerator SetNewPosAfterCooldown(EyeballController controller, float delay)
+    {
+
+        yield return new WaitForSeconds(delay);
+        Vector3 newPos = Tools.VectorToMoveEyeball(controller);
+        if (!controller.turningCRRunning)
+        {
+            if (newPos == Vector3.up) { controller.directionFacing = DirectionFacing.UP; }
+            else if (newPos == Vector3.down) { controller.directionFacing = DirectionFacing.DOWN; }
+            else if (newPos == Vector3.left) { controller.directionFacing = DirectionFacing.LEFT; }
+            else if (newPos == Vector3.right) { controller.directionFacing = DirectionFacing.RIGHT; }
+            controller.isMoving = true;
+            controller.newPos += newPos;
+
+
+        }
+        controller.moveCRRunning = false;
+
+    }
     public void MoveObjects()
     {
         for (int i = allBlocks.Count - 1; i >= 0; i--)
@@ -402,10 +443,11 @@ public class GameController : MonoBehaviour {
             eyeballController.playerOnRight = Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 20f, DirectionFacing.RIGHT, ref nothing);
             eyeballController.playerOnUp = Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 20f, DirectionFacing.UP, ref nothing);
             eyeballController.playerOnDown = Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 20f, DirectionFacing.DOWN, ref nothing);
-            eyeballController.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1,1), 0.5f, new DirectionFacing(), ref nothing);
-            eyeballController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, new DirectionFacing(), ref nothing);
-            eyeballController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, new DirectionFacing(), ref nothing);
-            eyeballController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, new DirectionFacing(), ref nothing);
+
+            eyeballController.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1,1), 0.5f, DirectionFacing.NONE, ref nothing);
+            eyeballController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
+            eyeballController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
+            eyeballController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
             
 
             Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref eyeballController.canMoveLeft);

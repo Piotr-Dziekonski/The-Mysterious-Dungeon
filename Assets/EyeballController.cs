@@ -21,20 +21,24 @@ public class EyeballController : MonoBehaviour {
     public SpriteRenderer sprite;
     public float maxTurnTimeWhenPlayerInRange;
     public float minTurnTimeWhenPlayerInRange;
+    public float movementMinDelay;
+    public float movementMaxDelay;
     public DirectionFacing prevDirection;
-    public bool turningCRRunning;
+    public bool turningCRRunning, moveCRRunning;
     [HideInInspector]
     public Vector3 newPos;
     public GameObject entityOnTopRight;
     public GameObject entityOnTopLeft;
     public GameObject entityOnBottomRight;
     public GameObject entityOnBottomLeft;
+    
 
     // Use this for initialization
     void Start () {
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         turningCRRunning = false;
+        moveCRRunning = false;
     }
 	
 	// Update is called once per frame
