@@ -12,6 +12,10 @@ public class PlayerCollision : MonoBehaviour
     public PlayerMovement playerMovement;
     public CircleCollider2D playerCollider;
     public GameObject playerOnLeft, playerOnRight, playerOnUp, playerOnDown;
+    public GameObject entityOnTopRight;
+    public GameObject entityOnTopLeft;
+    public GameObject entityOnBottomRight;
+    public GameObject entityOnBottomLeft;
     [HideInInspector]
     public DirectionFacing directionFacing = DirectionFacing.RIGHT;
     private Animator animator;

@@ -3774,7 +3774,7 @@ Prefab:
     - target: {fileID: 114774773391276776, guid: 6a50e6170648ca24583522f0bd2a1f86,
         type: 2}
       propertyPath: connectedTargets.Array.size
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4585055676747018, guid: 6a50e6170648ca24583522f0bd2a1f86, type: 2}
       propertyPath: m_LocalPosition.x
@@ -10562,6 +10562,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4581457548477546, guid: da102bd56f4990c48a931fa950149f3c,
     type: 2}
   m_PrefabInternal: {fileID: 1815599435}
+--- !u!114 &1315559498 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114774773391276776, guid: 6a50e6170648ca24583522f0bd2a1f86,
+    type: 2}
+  m_PrefabInternal: {fileID: 702394539}
+  m_Script: {fileID: 11500000, guid: 49077f6ad7210ae4c886712dc6aa02c9, type: 3}
 --- !u!1001 &1318590855
 Prefab:
   m_ObjectHideFlags: 0
@@ -11594,6 +11600,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 1245929065}
     m_Modifications:
+    - target: {fileID: 114316948837109742, guid: da102bd56f4990c48a931fa950149f3c,
+        type: 2}
+      propertyPath: gatesToOpen.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4581457548477546, guid: da102bd56f4990c48a931fa950149f3c, type: 2}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -11656,6 +11667,11 @@ Prefab:
       propertyPath: connectedBlockTargets.Array.data[5]
       value: 
       objectReference: {fileID: 1208832714}
+    - target: {fileID: 114316948837109742, guid: da102bd56f4990c48a931fa950149f3c,
+        type: 2}
+      propertyPath: gatesToOpen.Array.data[0]
+      value: 
+      objectReference: {fileID: 1315559498}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da102bd56f4990c48a931fa950149f3c, type: 2}
   m_IsPrefabAsset: 0

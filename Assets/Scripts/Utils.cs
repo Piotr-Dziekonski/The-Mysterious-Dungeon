@@ -6,7 +6,7 @@ using System;
 using UnityEngine;
 
 namespace Utils{
-    public enum DirectionFacing { NONE, RIGHT, LEFT, UP, DOWN }
+    public enum DirectionFacing { RIGHT, LEFT, UP, DOWN, NONE }
     /*public static class GameObjectExtension
     {
         public static class defaultController { get; set; };
@@ -17,6 +17,20 @@ namespace Utils{
     }*/
     public class Tools : MonoBehaviour
     {
+        public static Vector3 GetDiagonalEntityNewPos(GameObject diagonalEntity)
+        {
+            Vector3 entityNewPos = new Vector3();
+            if (diagonalEntity != null)
+            {
+                if (diagonalEntity.tag == "Player")
+                    entityNewPos = diagonalEntity.GetComponent<PlayerMovement>().newPos;
+                if (diagonalEntity.tag == "Eyeball")
+                    entityNewPos = diagonalEntity.GetComponent<EyeballController>().newPos;
+            }
+           
+            return entityNewPos;
+        }
+
 
         public static Vector3 VectorToMoveEyeball(EyeballController controller)
         {
@@ -26,40 +40,19 @@ namespace Utils{
             var bottomLeftEntity = controller.entityOnBottomLeft;
             var entityNewPos = new Vector3(0,0,0);
 
-            if (topRightEntity != null)
-            {
-                if(topRightEntity.tag == "Player")
-                    entityNewPos = topRightEntity.GetComponent<PlayerMovement>().newPos;
-                if (topRightEntity.tag == "Eyeball")
-                    entityNewPos = topRightEntity.GetComponent<EyeballController>().newPos;
-            }
-            if (topLeftEntity != null)
-            {
-                if (topLeftEntity.tag == "Player")
-                    entityNewPos = topLeftEntity.GetComponent<PlayerMovement>().newPos;
-                if (topLeftEntity.tag == "Eyeball")
-                    entityNewPos = topLeftEntity.GetComponent<EyeballController>().newPos;
-            }
-            if (bottomRightEntity != null)
-            {
-                if (bottomRightEntity.tag == "Player")
-                    entityNewPos = bottomRightEntity.GetComponent<PlayerMovement>().newPos;
-                if (bottomRightEntity.tag == "Eyeball")
-                    entityNewPos = bottomRightEntity.GetComponent<EyeballController>().newPos;
-            }
-            if (bottomLeftEntity != null)
-            {
-                if (bottomLeftEntity.tag == "Player")
-                    entityNewPos = bottomLeftEntity.GetComponent<PlayerMovement>().newPos;
-                if (bottomLeftEntity.tag == "Eyeball")
-                    entityNewPos = bottomLeftEntity.GetComponent<EyeballController>().newPos;
-            }
+            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity };
 
-
-            controller.canMoveRight = controller.canMoveRight && entityNewPos != controller.transform.localPosition + Vector3.right;
-            controller.canMoveLeft = controller.canMoveLeft && entityNewPos != controller.transform.localPosition + Vector3.left;
-            controller.canMoveUp = controller.canMoveUp && entityNewPos != controller.transform.localPosition + Vector3.up;
-            controller.canMoveDown = controller.canMoveDown && entityNewPos != controller.transform.localPosition + Vector3.down;
+            foreach(GameObject diagonalEntity in diagonalEntities)
+            {
+                entityNewPos = GetDiagonalEntityNewPos(diagonalEntity);
+                controller.canMoveRight = controller.canMoveRight && entityNewPos != controller.transform.localPosition + Vector3.right;
+                controller.canMoveLeft = controller.canMoveLeft && entityNewPos != controller.transform.localPosition + Vector3.left;
+                controller.canMoveUp = controller.canMoveUp && entityNewPos != controller.transform.localPosition + Vector3.up;
+                controller.canMoveDown = controller.canMoveDown && entityNewPos != controller.transform.localPosition + Vector3.down;
+            }
+            
+            
+            
             //Debug.Log(controller.name + entityNewPos);
             int rnd = UnityEngine.Random.Range(0, 100);
             Vector3 movDir = new Vector3();
@@ -293,16 +286,36 @@ namespace Utils{
                             else
                                 boolToChange = true;
                         }
+                        
+                        
                     }
-                    else if (hit[i].collider.tag == "Player")
+                    else if (hit[i].collider.tag == "Player" && directionToCheck != DirectionFacing.NONE)
                     {
-                        if (transform.tag == "Eyeball" )
+                        if (transform.tag == "Eyeball")
                         {
-                            if (i == 0)
+                            bool interrupted = false;
+                            if (i == 0 )
                             {
-                                playerFound = hit[0].collider.gameObject;
+                                playerFound = hit[i].collider.gameObject;
                                 boolToChange = false;
                             }
+                            else if (i > 0)
+                            {
+                                for(int j = 0; j < i; j++)
+                                {
+                                    if(hit[j].collider.tag == "Wall" || hit[j].collider.tag == "Gate" || hit[j].collider.tag == "Block" || hit[j].collider.tag == "Counter")
+                                    {
+                                        interrupted = true;
+                                        break;
+                                    }
+                                    
+                                }
+                                if (!interrupted)
+                                {
+                                    playerFound = hit[i].collider.gameObject;
+                                }
+                            }
+                            
 
                             
                         }
@@ -375,9 +388,13 @@ namespace Utils{
 
 
                     }
-                    else if (hit[i].collider.tag == "Eyeball" && transform.gameObject.tag == "Eyeball" && directionToCheck == DirectionFacing.NONE)
+                    else if ((hit[i].collider.tag == "Eyeball" || hit[i].collider.tag == "Player") && directionToCheck == DirectionFacing.NONE)
                     {
-                        return hit[i].collider.gameObject;
+                        if(transform.gameObject.tag == "Player" || transform.gameObject.tag == "Eyeball")
+                        {
+                            return hit[i].collider.gameObject;
+                        }
+                            
                     }
                     else if (boolToChange == true)
                     {

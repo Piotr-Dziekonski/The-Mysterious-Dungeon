@@ -397,7 +397,8 @@ public class GameController : MonoBehaviour {
     }
     public void CheckCollisions()
     {
-        for(int i = allPlayers.Count-1; i>= 0; i--)
+        bool nothing = false;
+        for (int i = allPlayers.Count-1; i>= 0; i--)
         {
             GameObject o = (GameObject)allPlayers[i];
             PlayerCollision playerCollision = o.GetComponent<PlayerCollision>();
@@ -415,7 +416,11 @@ public class GameController : MonoBehaviour {
                 Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref playerCollision.canMoveRight);
                 Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref playerCollision.canMoveUp);
                 Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref playerCollision.canMoveDown);
-                
+                playerCollision.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
+
             }
             CheckUnder(o);
 
@@ -438,7 +443,7 @@ public class GameController : MonoBehaviour {
             GameObject o = (GameObject)allEyeballs[i];
             EyeballController eyeballController = o.GetComponent<EyeballController>();
             //CheckUnder(o);
-            bool nothing = false;
+            
             eyeballController.playerOnLeft = Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 20f, DirectionFacing.LEFT, ref nothing);
             eyeballController.playerOnRight = Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 20f, DirectionFacing.RIGHT, ref nothing);
             eyeballController.playerOnUp = Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 20f, DirectionFacing.UP, ref nothing);
@@ -464,6 +469,24 @@ public class GameController : MonoBehaviour {
         {
             
             PlayerCollision playerCollision = o.GetComponent<PlayerCollision>();
+
+            var topRightEntity = playerCollision.entityOnTopRight;
+            var topLeftEntity = playerCollision.entityOnTopLeft;
+            var bottomRightEntity = playerCollision.entityOnBottomRight;
+            var bottomLeftEntity = playerCollision.entityOnBottomLeft;
+            var entityNewPos = new Vector3(0, 0, 0);
+
+            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity };
+
+            foreach (GameObject diagonalEntity in diagonalEntities)
+            {
+                entityNewPos = Tools.GetDiagonalEntityNewPos(diagonalEntity);
+                playerCollision.canMoveRight = playerCollision.canMoveRight && entityNewPos != playerCollision.transform.localPosition + Vector3.right;
+                playerCollision.canMoveLeft = playerCollision.canMoveLeft && entityNewPos != playerCollision.transform.localPosition + Vector3.left;
+                playerCollision.canMoveUp = playerCollision.canMoveUp && entityNewPos != playerCollision.transform.localPosition + Vector3.up;
+                playerCollision.canMoveDown = playerCollision.canMoveDown && entityNewPos != playerCollision.transform.localPosition + Vector3.down;
+            }
+
             bool condition = (playerCollision.canMoveUp && movVec == Vector3.up) ||
                             (playerCollision.canMoveDown && movVec == Vector3.down) ||
                             (playerCollision.canMoveLeft && movVec == Vector3.left) ||
