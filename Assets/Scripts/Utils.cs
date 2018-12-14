@@ -26,6 +26,8 @@ namespace Utils{
                     entityNewPos = diagonalEntity.GetComponent<PlayerMovement>().newPos;
                 if (diagonalEntity.tag == "Eyeball")
                     entityNewPos = diagonalEntity.GetComponent<EyeballController>().newPos;
+                if (diagonalEntity.tag == "Block")
+                    entityNewPos = diagonalEntity.GetComponent<BlockController>().newPos;
             }
            
             return entityNewPos;
@@ -34,13 +36,19 @@ namespace Utils{
 
         public static Vector3 VectorToMoveEyeball(EyeballController controller)
         {
+
+
             var topRightEntity = controller.entityOnTopRight;
             var topLeftEntity = controller.entityOnTopLeft;
             var bottomRightEntity = controller.entityOnBottomRight;
             var bottomLeftEntity = controller.entityOnBottomLeft;
+            var entity2BlocksAwayOnRight = controller.entity2BlocksAwayOnRight;
+            var entity2BlocksAwayOnLeft = controller.entity2BlocksAwayOnLeft;
+            var entity2BlocksAwayOnUp = controller.entity2BlocksAwayOnUp;
+            var entity2BlocksAwayOnDown = controller.entity2BlocksAwayOnDown;
             var entityNewPos = new Vector3(0,0,0);
 
-            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity };
+            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity, entity2BlocksAwayOnRight, entity2BlocksAwayOnLeft, entity2BlocksAwayOnUp, entity2BlocksAwayOnDown };
 
             foreach(GameObject diagonalEntity in diagonalEntities)
             {
@@ -97,19 +105,19 @@ namespace Utils{
             { 
                 return movDir;
             }
-            else if(rnd < 70 && controller.canMoveLeft && controller.prevDirection != DirectionFacing.LEFT)
+            else if(rnd < 70 && controller.canMoveLeft)
             {
                 return Vector3.left;
             }
-            else if(rnd < 80 && controller.canMoveRight && controller.prevDirection != DirectionFacing.RIGHT)
+            else if(rnd < 80 && controller.canMoveRight)
             {
                 return Vector3.right;
             }
-            else if(rnd < 90 && controller.canMoveUp && controller.prevDirection != DirectionFacing.UP)
+            else if(rnd < 90 && controller.canMoveUp)
             {
                 return Vector3.up;
             }
-            else if(controller.canMoveDown && controller.prevDirection != DirectionFacing.DOWN)
+            else if(controller.canMoveDown)
             {
                 return Vector3.down;
             }
@@ -303,7 +311,7 @@ namespace Utils{
                             {
                                 for(int j = 0; j < i; j++)
                                 {
-                                    if(hit[j].collider.tag == "Wall" || hit[j].collider.tag == "Gate" || hit[j].collider.tag == "Block" || hit[j].collider.tag == "Counter")
+                                    if(hit[j].collider.tag == "Wall" || hit[j].collider.tag == "Door" || hit[j].collider.tag == "Block" || hit[j].collider.tag == "Counter")
                                     {
                                         interrupted = true;
                                         break;
@@ -345,7 +353,7 @@ namespace Utils{
                         
                         
                     }
-                    else if (hit[i].collider.tag == "Block" && arrow == false)
+                    else if (hit[i].collider.tag == "Block" && arrow == false && directionToCheck != DirectionFacing.NONE)
                     {
                         if(transform.tag == "Player")
                         {
@@ -388,9 +396,9 @@ namespace Utils{
 
 
                     }
-                    else if ((hit[i].collider.tag == "Eyeball" || hit[i].collider.tag == "Player") && directionToCheck == DirectionFacing.NONE)
+                    else if ((hit[i].collider.tag == "Eyeball" || hit[i].collider.tag == "Player" || hit[i].collider.tag == "Block") && directionToCheck == DirectionFacing.NONE)
                     {
-                        if(transform.gameObject.tag == "Player" || transform.gameObject.tag == "Eyeball")
+                        if(transform.gameObject.tag == "Player" || transform.gameObject.tag == "Eyeball" || transform.gameObject.tag == "Block")
                         {
                             return hit[i].collider.gameObject;
                         }

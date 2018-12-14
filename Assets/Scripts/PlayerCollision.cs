@@ -4,20 +4,33 @@ using Utils;
 
 public class PlayerCollision : MonoBehaviour
 {
-
-    public bool canMoveRight, canMoveLeft, canMoveUp, canMoveDown, allowFinishSound;
+    [Header("Mechanics data")]
+    public bool allowFinishSound;
     public GameObject buttonUnderPlayer;
     public bool isExiting = false;
     public bool finished = false;
-    public PlayerMovement playerMovement;
-    public CircleCollider2D playerCollider;
-    public GameObject playerOnLeft, playerOnRight, playerOnUp, playerOnDown;
+    public DirectionFacing directionFacing = DirectionFacing.RIGHT;
+    [Header("Movement data")]
+    public bool canMoveRight;
+    public bool canMoveLeft;
+    public bool canMoveUp;
+    public bool canMoveDown;
+    [Header("Detected collisions")]
+    public GameObject playerOnLeft;
+    public GameObject playerOnRight;
+    public GameObject playerOnUp;
+    public GameObject playerOnDown;
     public GameObject entityOnTopRight;
     public GameObject entityOnTopLeft;
     public GameObject entityOnBottomRight;
     public GameObject entityOnBottomLeft;
+    public GameObject entity2BlocksAwayOnRight;
+    public GameObject entity2BlocksAwayOnLeft;
+    public GameObject entity2BlocksAwayOnUp;
+    public GameObject entity2BlocksAwayOnDown;
+
     [HideInInspector]
-    public DirectionFacing directionFacing = DirectionFacing.RIGHT;
+    public PlayerMovement playerMovement;
     private Animator animator;
 
     void Awake()
@@ -27,7 +40,6 @@ public class PlayerCollision : MonoBehaviour
         canMoveUp = true;
         canMoveDown = true;
         playerMovement = GetComponent<PlayerMovement>();
-        playerCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
     }
 

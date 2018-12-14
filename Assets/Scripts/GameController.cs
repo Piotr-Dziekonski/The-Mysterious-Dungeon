@@ -420,6 +420,10 @@ public class GameController : MonoBehaviour {
                 playerCollision.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
                 playerCollision.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
                 playerCollision.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entity2BlocksAwayOnRight = Tools.CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entity2BlocksAwayOnLeft = Tools.CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entity2BlocksAwayOnUp = Tools.CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing);
+                playerCollision.entity2BlocksAwayOnDown = Tools.CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing);
 
             }
             CheckUnder(o);
@@ -435,6 +439,16 @@ public class GameController : MonoBehaviour {
             blockController.playerOnRight = Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref blockController.canMoveRight);
             blockController.playerOnUp = Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref blockController.canMoveUp);
             blockController.playerOnDown = Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref blockController.canMoveDown);
+
+            blockController.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entity2BlocksAwayOnRight = Tools.CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entity2BlocksAwayOnLeft = Tools.CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entity2BlocksAwayOnUp = Tools.CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing);
+            blockController.entity2BlocksAwayOnDown = Tools.CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing);
+
             CheckUnder(o);
         }
         for (int i = allEyeballs.Count - 1; i >= 0; i--)
@@ -453,7 +467,11 @@ public class GameController : MonoBehaviour {
             eyeballController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
             eyeballController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
             eyeballController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-            
+            eyeballController.entity2BlocksAwayOnRight = Tools.CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing);
+            eyeballController.entity2BlocksAwayOnLeft = Tools.CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing);
+            eyeballController.entity2BlocksAwayOnUp = Tools.CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing);
+            eyeballController.entity2BlocksAwayOnDown = Tools.CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing);
+
 
             Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref eyeballController.canMoveLeft);
             Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref eyeballController.canMoveRight);
@@ -465,7 +483,45 @@ public class GameController : MonoBehaviour {
     }
     public void SetNewPositions(Vector3 movVec)
     {
-        foreach(GameObject o in allPlayers)
+        foreach (GameObject o in allBlocks)
+        {
+            BlockController blockController = o.GetComponent<BlockController>();
+
+            var topRightEntity = blockController.entityOnTopRight;
+            var topLeftEntity = blockController.entityOnTopLeft;
+            var bottomRightEntity = blockController.entityOnBottomRight;
+            var bottomLeftEntity = blockController.entityOnBottomLeft;
+            var entity2BlocksAwayOnRight = blockController.entity2BlocksAwayOnRight;
+            var entity2BlocksAwayOnLeft = blockController.entity2BlocksAwayOnLeft;
+            var entity2BlocksAwayOnUp = blockController.entity2BlocksAwayOnUp;
+            var entity2BlocksAwayOnDown = blockController.entity2BlocksAwayOnDown;
+            var entityNewPos = new Vector3(0, 0, 0);
+
+            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity, entity2BlocksAwayOnRight, entity2BlocksAwayOnLeft, entity2BlocksAwayOnUp, entity2BlocksAwayOnDown };
+
+            foreach (GameObject diagonalEntity in diagonalEntities)
+            {
+                entityNewPos = Tools.GetDiagonalEntityNewPos(diagonalEntity);
+                blockController.canMoveRight = blockController.canMoveRight && entityNewPos != blockController.transform.localPosition + Vector3.right;
+                blockController.canMoveLeft = blockController.canMoveLeft && entityNewPos != blockController.transform.localPosition + Vector3.left;
+                blockController.canMoveUp = blockController.canMoveUp && entityNewPos != blockController.transform.localPosition + Vector3.up;
+                blockController.canMoveDown = blockController.canMoveDown && entityNewPos != blockController.transform.localPosition + Vector3.down;
+            }
+
+            bool condition = (blockController.canMoveUp && blockController.playerOnDown != null && blockController.playerOnDown.GetComponent<PlayerCollision>().canMoveUp && movVec == Vector3.up) ||
+                            (blockController.canMoveDown && blockController.playerOnUp != null && blockController.playerOnUp.GetComponent<PlayerCollision>().canMoveDown && movVec == Vector3.down) ||
+                            (blockController.canMoveLeft && blockController.playerOnRight != null && blockController.playerOnRight.GetComponent<PlayerCollision>().canMoveLeft && movVec == Vector3.left) ||
+                            (blockController.canMoveRight && blockController.playerOnLeft != null && blockController.playerOnLeft.GetComponent<PlayerCollision>().canMoveRight && movVec == Vector3.right);
+            //Debug.Log("Block can move up:"+ blockController.canMoveUp);
+            //Debug.Log(blockController.playerOnDown != null);
+
+            if (condition)
+            {
+                blockController.isMoving = true;
+                blockController.newPos += movVec;
+            }
+        }
+        foreach (GameObject o in allPlayers)
         {
             
             PlayerCollision playerCollision = o.GetComponent<PlayerCollision>();
@@ -474,9 +530,13 @@ public class GameController : MonoBehaviour {
             var topLeftEntity = playerCollision.entityOnTopLeft;
             var bottomRightEntity = playerCollision.entityOnBottomRight;
             var bottomLeftEntity = playerCollision.entityOnBottomLeft;
+            var entity2BlocksAwayOnRight = playerCollision.entity2BlocksAwayOnRight;
+            var entity2BlocksAwayOnLeft = playerCollision.entity2BlocksAwayOnLeft;
+            var entity2BlocksAwayOnUp = playerCollision.entity2BlocksAwayOnUp;
+            var entity2BlocksAwayOnDown = playerCollision.entity2BlocksAwayOnDown;
             var entityNewPos = new Vector3(0, 0, 0);
 
-            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity };
+            GameObject[] diagonalEntities = { topRightEntity, topLeftEntity, bottomRightEntity, bottomLeftEntity, entity2BlocksAwayOnRight, entity2BlocksAwayOnLeft, entity2BlocksAwayOnUp, entity2BlocksAwayOnDown };
 
             foreach (GameObject diagonalEntity in diagonalEntities)
             {
@@ -514,22 +574,7 @@ public class GameController : MonoBehaviour {
             }
             
         }
-        foreach (GameObject o in allBlocks)
-        {
-            BlockController blockController = o.GetComponent<BlockController>();
-            bool condition = (blockController.canMoveUp && blockController.playerOnDown != null && blockController.playerOnDown.GetComponent<PlayerCollision>().canMoveUp && movVec == Vector3.up) ||
-                            (blockController.canMoveDown && blockController.playerOnUp != null && blockController.playerOnUp.GetComponent<PlayerCollision>().canMoveDown && movVec == Vector3.down) ||
-                            (blockController.canMoveLeft && blockController.playerOnRight != null && blockController.playerOnRight.GetComponent<PlayerCollision>().canMoveLeft && movVec == Vector3.left) ||
-                            (blockController.canMoveRight && blockController.playerOnLeft != null && blockController.playerOnLeft.GetComponent<PlayerCollision>().canMoveRight && movVec == Vector3.right);
-            //Debug.Log("Block can move up:"+ blockController.canMoveUp);
-            //Debug.Log(blockController.playerOnDown != null);
-            
-            if (condition)
-            {
-                blockController.isMoving = true;
-                blockController.newPos += movVec;
-            }
-        }
+        
         
 
 

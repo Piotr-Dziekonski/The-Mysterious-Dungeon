@@ -5,33 +5,44 @@ using Utils;
 
 public class EyeballController : MonoBehaviour {
 
+    [Header("Mechanics data")]
+    public bool playerInRange;
+    public DirectionFacing directionFacing;
+    public DirectionFacing directionToTurnTo;
+    [Header("Movement data")]
+    public float maxTurnTimeWhenPlayerInRange;
+    public float minTurnTimeWhenPlayerInRange;
+    public float movementMinDelay;
+    public float movementMaxDelay;
+    public Vector3 newPos;
     public bool isMoving;
     public bool canMoveLeft;
     public bool canMoveRight;
     public bool canMoveDown;
     public bool canMoveUp;
+    [Header("Detected collisions")]
     public GameObject playerOnLeft;
     public GameObject playerOnRight;
     public GameObject playerOnUp;
     public GameObject playerOnDown;
-    public bool playerInRange;
-    public DirectionFacing directionFacing;
-    private DirectionFacing directionToTurnTo;
-    public Animator animator;
-    public SpriteRenderer sprite;
-    public float maxTurnTimeWhenPlayerInRange;
-    public float minTurnTimeWhenPlayerInRange;
-    public float movementMinDelay;
-    public float movementMaxDelay;
-    public DirectionFacing prevDirection;
-    public bool turningCRRunning, moveCRRunning;
-    [HideInInspector]
-    public Vector3 newPos;
     public GameObject entityOnTopRight;
     public GameObject entityOnTopLeft;
     public GameObject entityOnBottomRight;
     public GameObject entityOnBottomLeft;
+    public GameObject entity2BlocksAwayOnRight;
+    public GameObject entity2BlocksAwayOnLeft;
+    public GameObject entity2BlocksAwayOnUp;
+    public GameObject entity2BlocksAwayOnDown;
     
+    
+    private Animator animator;
+    private SpriteRenderer sprite;
+
+    [HideInInspector]
+    public bool turningCRRunning, moveCRRunning;
+    
+
+
 
     // Use this for initialization
     void Start () {
@@ -53,7 +64,7 @@ public class EyeballController : MonoBehaviour {
         IEnumerator coroutine = Turn(DirectionFacing.RIGHT, 0);
 
 
-        if (playerInRange)
+        if (playerInRange && !turningCRRunning)
         {
             
             if (playerOnLeft != null)
@@ -136,11 +147,6 @@ public class EyeballController : MonoBehaviour {
         yield return new WaitForSeconds(time);
         if (direction == directionToTurnTo)
         {
-            if(prevDirection != directionFacing)
-            {
-                prevDirection = directionFacing;
-            }
-            
             directionFacing = directionToTurnTo;
         }
         turningCRRunning = false;

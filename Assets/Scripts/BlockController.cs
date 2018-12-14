@@ -5,19 +5,31 @@ using System.Linq;
 
 public class BlockController : MonoBehaviour
 {
-
-    public Rigidbody2D rb;
-    public bool canMoveRight, canMoveLeft, canMoveUp, canMoveDown;
+    [Header("Mechanics data")]
     public GameObject targetUnderBlock;
+    [Header("Movement data")]
+    public bool canMoveRight;
+    public bool canMoveLeft;
+    public bool canMoveUp;
+    public bool canMoveDown;
     public bool isMoving;
     public Vector3 newPos, movementVec;
-    public bool isAround;
-    public GameObject playerOnLeft, playerOnRight, playerOnUp, playerOnDown;
-
+    [Header("Detected collisions")]
+    public GameObject playerOnLeft;
+    public GameObject playerOnRight;
+    public GameObject playerOnUp;
+    public GameObject playerOnDown;
+    public GameObject entityOnTopRight;
+    public GameObject entityOnTopLeft;
+    public GameObject entityOnBottomRight;
+    public GameObject entityOnBottomLeft;
+    public GameObject entity2BlocksAwayOnRight;
+    public GameObject entity2BlocksAwayOnLeft;
+    public GameObject entity2BlocksAwayOnUp;
+    public GameObject entity2BlocksAwayOnDown;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         canMoveRight = true;
         canMoveLeft = true;
         canMoveUp = true;
