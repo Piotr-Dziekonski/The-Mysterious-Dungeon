@@ -28,39 +28,5 @@ public class BlockController : MonoBehaviour
     public GameObject entity2BlocksAwayOnUp;
     public GameObject entity2BlocksAwayOnDown;
 
-    void Start()
-    {
-        canMoveRight = true;
-        canMoveLeft = true;
-        canMoveUp = true;
-        canMoveDown = true;
-    }
-
-    void Update()
-    {
-       
-        /*else if (CheckIfUnderSelf("Button") != null)
-        {
-            if (targetUnderBlock == null)
-            {
-                targetUnderBlock = CheckIfUnderSelf("Button");
-            }
-            targetUnderBlock.GetComponent<ButtonController>().pressed = true;
-            targetUnderBlock.GetComponent<ButtonController>().standingPlayer = gameObject;
-        }*/
-
-
-
-        /*if (CheckIfUnderSelf("Button") == null)
-        {
-            if (targetUnderBlock != null && targetUnderBlock.GetComponent<ButtonController>().resetable == true)
-            {
-                targetUnderBlock.GetComponent<ButtonController>().pressed = false;
-                targetUnderBlock.GetComponent<ButtonController>().standingPlayer = null;
-            }
-            targetUnderBlock = null;
-        }*/
-
-    }
 }
 

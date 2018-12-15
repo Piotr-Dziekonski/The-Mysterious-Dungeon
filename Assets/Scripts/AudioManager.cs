@@ -45,7 +45,7 @@ public class AudioManager : MonoBehaviour
         foreach(GameObject player in gameObjects)
         {
             PlayerCollision playerCollision = player.GetComponent<PlayerCollision>();
-            if (player.GetComponent<PlayerMovement>().isMoving && !GetComponent<AudioManager>().IsAlreadyPlaying("PlayerWalk"))
+            if (player.GetComponent<PlayerCollision>().isMoving && !GetComponent<AudioManager>().IsAlreadyPlaying("PlayerWalk"))
             {
                 GetComponent<AudioManager>().Play("PlayerWalk");
                 break;
@@ -123,6 +123,7 @@ public class AudioManager : MonoBehaviour
                 }
                 GetComponent<AudioManager>().Play("DoorUnlock");
                 door.GetComponent<SpriteRenderer>().enabled = false;
+                door.GetComponent<CircleCollider2D>().enabled = false;
 
             }
             

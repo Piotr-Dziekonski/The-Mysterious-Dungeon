@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace Utils{
     public enum DirectionFacing { RIGHT, LEFT, UP, DOWN, NONE }
-    /*public static class GameObjectExtension
-    {
-        public static class defaultController { get; set; };
-        public static void DoSomething(this GameObject obj)
-        {
 
-        }
-    }*/
+
     public class Tools : MonoBehaviour
     {
         public static Vector3 GetDiagonalEntityNewPos(GameObject diagonalEntity)
@@ -23,7 +18,7 @@ namespace Utils{
             if (diagonalEntity != null)
             {
                 if (diagonalEntity.tag == "Player")
-                    entityNewPos = diagonalEntity.GetComponent<PlayerMovement>().newPos;
+                    entityNewPos = diagonalEntity.GetComponent<PlayerCollision>().newPos;
                 if (diagonalEntity.tag == "Eyeball")
                     entityNewPos = diagonalEntity.GetComponent<EyeballController>().newPos;
                 if (diagonalEntity.tag == "Block")
@@ -32,8 +27,77 @@ namespace Utils{
            
             return entityNewPos;
         }
+        public static void UpdateCollisionsData<T>(GameObject o)
+        {
+            T controller = o.GetComponent<T>();
+            List<FieldInfo> fields = new List<FieldInfo>(controller.GetType().GetFields());
+
+            FieldInfo canMoveLeft = fields.Find(x => x.Name == "canMoveLeft");
+            FieldInfo canMoveRight = fields.Find(x => x.Name == "canMoveRight");
+            FieldInfo canMoveUp = fields.Find(x => x.Name == "canMoveUp");
+            FieldInfo canMoveDown = fields.Find(x => x.Name == "canMoveDown");
+            FieldInfo entityOnTopRight = fields.Find(x => x.Name == "entityOnTopRight");
+            FieldInfo entityOnTopLeft = fields.Find(x => x.Name == "entityOnTopLeft");
+            FieldInfo entityOnBottomLeft = fields.Find(x => x.Name == "entityOnBottomLeft");
+            FieldInfo entityOnBottomRight = fields.Find(x => x.Name == "entityOnBottomRight");
+            FieldInfo entity2BlocksAwayOnRight = fields.Find(x => x.Name == "entity2BlocksAwayOnRight");
+            FieldInfo entity2BlocksAwayOnLeft = fields.Find(x => x.Name == "entity2BlocksAwayOnLeft");
+            FieldInfo entity2BlocksAwayOnUp = fields.Find(x => x.Name == "entity2BlocksAwayOnUp");
+            FieldInfo entity2BlocksAwayOnDown = fields.Find(x => x.Name == "entity2BlocksAwayOnDown");
+            FieldInfo finished = fields.Find(x => x.Name == "finished");
+            FieldInfo range = fields.Find(x => x.Name == "range");
+            FieldInfo playerOnLeft = fields.Find(x => x.Name == "playerOnLeft");
+            FieldInfo playerOnRight = fields.Find(x => x.Name == "playerOnRight");
+            FieldInfo playerOnUp = fields.Find(x => x.Name == "playerOnUp");
+            FieldInfo playerOnDown = fields.Find(x => x.Name == "playerOnDown");
+
+            if (finished != null && (bool)finished.GetValue(controller) == true)
+            {
+                canMoveLeft.SetValue(controller, false);
+                canMoveRight.SetValue(controller, false);
+                canMoveUp.SetValue(controller, false);
+                canMoveDown.SetValue(controller, false);
+            }
+            else
+            {
+                bool left = (bool)canMoveLeft.GetValue(controller);
+                bool right = (bool)canMoveRight.GetValue(controller);
+                bool up = (bool)canMoveUp.GetValue(controller);
+                bool down = (bool)canMoveDown.GetValue(controller);
+                float raycastRange = 0.5f;
+
+                bool nothing = false;
 
 
+                playerOnLeft.SetValue(controller, CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref left));
+                playerOnRight.SetValue(controller, CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref right));
+                playerOnUp.SetValue(controller, CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref up));
+                playerOnDown.SetValue(controller, CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref down));
+
+                if (range != null && range.GetValue(controller) != null)
+                {
+                    raycastRange = (float)range.GetValue(controller);
+                    playerOnLeft.SetValue(controller, CheckDirection(o.transform, -0.48f, 0f, Vector2.left, raycastRange, DirectionFacing.LEFT, ref nothing));
+                    playerOnRight.SetValue(controller, CheckDirection(o.transform, 0.48f, 0f, Vector2.right, raycastRange, DirectionFacing.RIGHT, ref nothing));
+                    playerOnUp.SetValue(controller, CheckDirection(o.transform, 0f, 0.48f, Vector2.up, raycastRange, DirectionFacing.UP, ref nothing));
+                    playerOnDown.SetValue(controller, CheckDirection(o.transform, 0f, -0.48f, Vector2.down, raycastRange, DirectionFacing.DOWN, ref nothing));
+                }
+
+                canMoveLeft.SetValue(controller, left);
+                canMoveRight.SetValue(controller, right);
+                canMoveUp.SetValue(controller, up);
+                canMoveDown.SetValue(controller, down);
+
+                entityOnTopRight.SetValue(controller, CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1, 1), 0.5f, DirectionFacing.NONE, ref nothing));
+                entityOnTopLeft.SetValue(controller, CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing));
+                entityOnBottomLeft.SetValue(controller, CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing));
+                entityOnBottomRight.SetValue(controller, CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing));
+                entity2BlocksAwayOnRight.SetValue(controller, CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing));
+                entity2BlocksAwayOnLeft.SetValue(controller, CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing));
+                entity2BlocksAwayOnUp.SetValue(controller, CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing));
+                entity2BlocksAwayOnDown.SetValue(controller, CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing));
+            }
+        }
         public static Vector3 VectorToMoveEyeball(EyeballController controller)
         {
 
@@ -156,7 +220,6 @@ namespace Utils{
             }
             return movDir;
         }
-
         public static void SetAnimationFacingBools(DirectionFacing objectDirectionFacing, Animator animator, SpriteRenderer sprite)
         {
             if (objectDirectionFacing == DirectionFacing.LEFT)
@@ -226,7 +289,6 @@ namespace Utils{
             return null;
 
         }
-
         public static GameObject CheckDirection(Transform transform, float offsetX, float offsetY, Vector2 direction, float distance, DirectionFacing directionToCheck, ref bool boolToChange)
         {
             GameObject playerFound = null;

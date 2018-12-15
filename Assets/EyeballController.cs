@@ -6,6 +6,7 @@ using Utils;
 public class EyeballController : MonoBehaviour {
 
     [Header("Mechanics data")]
+    public float range;
     public bool playerInRange;
     public DirectionFacing directionFacing;
     public DirectionFacing directionToTurnTo;
@@ -40,11 +41,7 @@ public class EyeballController : MonoBehaviour {
 
     [HideInInspector]
     public bool turningCRRunning, moveCRRunning;
-    
 
-
-
-    // Use this for initialization
     void Start () {
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
@@ -52,7 +49,6 @@ public class EyeballController : MonoBehaviour {
         moveCRRunning = false;
     }
 	
-	// Update is called once per frame
 	void Update () {
 
         animator.SetBool("isMoving", isMoving);
@@ -63,10 +59,8 @@ public class EyeballController : MonoBehaviour {
         float time = Random.Range(minTurnTimeWhenPlayerInRange, maxTurnTimeWhenPlayerInRange);
         IEnumerator coroutine = Turn(DirectionFacing.RIGHT, 0);
 
-
         if (playerInRange && !turningCRRunning)
         {
-            
             if (playerOnLeft != null)
             {
                 PlayerCollision playerCollision = playerOnLeft.GetComponent<PlayerCollision>();
@@ -80,8 +74,6 @@ public class EyeballController : MonoBehaviour {
                     //StopCoroutine(coroutine);
                     coroutine = Turn(DirectionFacing.LEFT, time);
                 }
-                
-                
             }
             else if (playerOnRight != null)
             {
@@ -96,7 +88,6 @@ public class EyeballController : MonoBehaviour {
                     //StopCoroutine(coroutine);
                     coroutine = Turn(DirectionFacing.RIGHT, time);
                 }
-
             }
             else if (playerOnUp != null)
             {
@@ -111,7 +102,6 @@ public class EyeballController : MonoBehaviour {
                     //StopCoroutine(coroutine);
                     coroutine = Turn(DirectionFacing.UP, time);
                 }
-
             }
             else if (playerOnDown != null)
             {
@@ -126,19 +116,12 @@ public class EyeballController : MonoBehaviour {
                     //StopCoroutine(coroutine);
                     coroutine = Turn(DirectionFacing.DOWN, time);
                 }
-
             }
-
             if (coroutine != null)
             {
                 StartCoroutine(coroutine);
             }
         }
-        
-        
-        
-        
-        
 	}
 
     private IEnumerator Turn(DirectionFacing direction, float time)
@@ -150,8 +133,5 @@ public class EyeballController : MonoBehaviour {
             directionFacing = directionToTurnTo;
         }
         turningCRRunning = false;
-            
-        
-
     }
 }

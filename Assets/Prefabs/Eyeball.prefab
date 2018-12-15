@@ -87,6 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc180841dd1a9cb41ac7ef7ea2f7f44e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 20
   playerInRange: 0
   directionFacing: 0
   directionToTurnTo: 0

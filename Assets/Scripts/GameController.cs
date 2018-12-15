@@ -10,16 +10,16 @@ using Utils;
 [System.Serializable]
 public class GameController : MonoBehaviour {
 
-    public static ArrayList allPlayers = new ArrayList();
-    public static ArrayList allButtons = new ArrayList();
+    public static List<GameObject> allPlayers;
+    public static List<GameObject> allButtons;
     //public static ArrayList allGates = new ArrayList();
-    public static ArrayList allArrows = new ArrayList();
-    public static ArrayList allBlocks = new ArrayList();
-    public static ArrayList allLevers = new ArrayList();
-    public static ArrayList allCounters = new ArrayList();
-    public static ArrayList allDoors = new ArrayList();
-    public static ArrayList allItems = new ArrayList();
-    public static ArrayList allEyeballs = new ArrayList();
+    public static List<GameObject> allArrows;
+    public static List<GameObject> allBlocks;
+    public static List<GameObject> allLevers;
+    public static List<GameObject> allCounters;
+    public static List<GameObject> allDoors;
+    public static List<GameObject> allItems;
+    public static List<GameObject> allEyeballs;
 
     public static bool[] completedLevels = new bool[11]; // 10 levels + boss level
     public static int activeLevelNumber;
@@ -32,11 +32,9 @@ public class GameController : MonoBehaviour {
     public static ItemController.ItemType[] inventory = new ItemController.ItemType[10];
     public GameObject completeLevelUI;
 
-    //public ItemController.ItemType[] currentInv;
 
     private static SaveData dataToLoad;
 
-	// Use this for initialization
 	void Awake () {
 		if(instance == null)
         {
@@ -47,24 +45,22 @@ public class GameController : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        allPlayers = new ArrayList(GameObject.FindGameObjectsWithTag("Player"));
-        allButtons = new ArrayList(GameObject.FindGameObjectsWithTag("Button"));
+        allPlayers = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+        allButtons = new List<GameObject>(GameObject.FindGameObjectsWithTag("Button"));
         //allGates = new ArrayList(GameObject.FindGameObjectsWithTag("Gate"));
-        allArrows = new ArrayList(GameObject.FindGameObjectsWithTag("Arrow"));
-        allBlocks = new ArrayList(GameObject.FindGameObjectsWithTag("Block"));
-        allLevers = new ArrayList(GameObject.FindGameObjectsWithTag("Lever"));
-        allCounters = new ArrayList(GameObject.FindGameObjectsWithTag("Counter"));
-        allDoors = new ArrayList(GameObject.FindGameObjectsWithTag("Door"));
-        allItems = new ArrayList(GameObject.FindGameObjectsWithTag("Item"));
-        allEyeballs = new ArrayList(GameObject.FindGameObjectsWithTag("Eyeball"));
+        allArrows = new List<GameObject>(GameObject.FindGameObjectsWithTag("Arrow"));
+        allBlocks = new List<GameObject>(GameObject.FindGameObjectsWithTag("Block"));
+        allLevers = new List<GameObject>(GameObject.FindGameObjectsWithTag("Lever"));
+        allCounters = new List<GameObject>(GameObject.FindGameObjectsWithTag("Counter"));
+        allDoors = new List<GameObject>(GameObject.FindGameObjectsWithTag("Door"));
+        allItems = new List<GameObject>(GameObject.FindGameObjectsWithTag("Item"));
+        allEyeballs = new List<GameObject>(GameObject.FindGameObjectsWithTag("Eyeball"));
         //completedLevels = new bool[11];
 
     }
 
     // Update is called once per frame
     void Update () {
-
-
         CheckCollisions();
         if (Input.GetAxisRaw("Vertical") > 0 && !cooldown)
         {
@@ -99,63 +95,27 @@ public class GameController : MonoBehaviour {
             LoadGame();
         }
         SetNewNPCPositions();
-
-
         MoveObjects();
 
-
-
-
-        //currentInv = inventory;
-
-        if (cooldown)
-        {
-            GameController.cooldown = false;
-        }
+        cooldown = false;
 
     }
-
     private void SetNewNPCPositions()
     {
         foreach (GameObject o in allEyeballs)
         {
             EyeballController eyeballController = o.GetComponent<EyeballController>();
             if (eyeballController.isMoving == false && !eyeballController.playerInRange && !eyeballController.turningCRRunning)
-            {
-                
+            {    
                 if(!eyeballController.moveCRRunning && !eyeballController.turningCRRunning)
                 {
-
-                    //Debug.Log("lol");
                     eyeballController.moveCRRunning = true;
                     StartCoroutine(SetNewPosAfterCooldown(eyeballController, Random.Range(eyeballController.movementMinDelay, eyeballController.movementMaxDelay)));
-                    //Invoke("SetNewPosAfterCooldown", Random.Range(1,4));
-                    //eyeballController.isMoving = true;
-                    //eyeballController.newPos += newPos;
-                    //Debug.Log(eyeballController.newPos);
                 }
                 
             }
             
         }
-    }
-    private IEnumerator SetNewPosAfterCooldown(EyeballController controller, Vector3 newPos, float delay)
-    {
-        
-        yield return new WaitForSeconds(delay);
-        if (!controller.turningCRRunning)
-        {
-            if (newPos == Vector3.up) { controller.directionFacing = DirectionFacing.UP; }
-            else if (newPos == Vector3.down) { controller.directionFacing = DirectionFacing.DOWN; }
-            else if(newPos == Vector3.left) { controller.directionFacing = DirectionFacing.LEFT; }
-            else if(newPos == Vector3.right) { controller.directionFacing = DirectionFacing.RIGHT; }
-            controller.isMoving = true;
-            controller.newPos += newPos;
-
-            
-        }
-        controller.moveCRRunning = false;
-
     }
     private IEnumerator SetNewPosAfterCooldown(EyeballController controller, float delay)
     {
@@ -201,21 +161,21 @@ public class GameController : MonoBehaviour {
         for (int i = allPlayers.Count - 1; i >= 0; i--)
         {
             GameObject o = (GameObject)allPlayers[i];
-            PlayerMovement playerMovement = o.GetComponent<PlayerMovement>();
-            if (playerMovement.isMoving)
+            PlayerCollision playerCollision = o.GetComponent<PlayerCollision>();
+            if (playerCollision.isMoving)
             {
-                if (playerMovement.transform.position == playerMovement.newPos)
+                if (playerCollision.transform.position == playerCollision.newPos)
                 {
-                    playerMovement.isMoving = false;
+                    playerCollision.isMoving = false;
                 }
                 else
                 {
-                    playerMovement.transform.position = Vector3.MoveTowards(playerMovement.transform.position, playerMovement.newPos, Time.deltaTime * speed);
+                    playerCollision.transform.position = Vector3.MoveTowards(playerCollision.transform.position, playerCollision.newPos, Time.deltaTime * speed);
                 }
             }
             else
             {
-                playerMovement.newPos = playerMovement.transform.position;
+                playerCollision.newPos = playerCollision.transform.position;
             }
         }
         for (int i = allEyeballs.Count - 1; i >= 0; i--)
@@ -397,35 +357,10 @@ public class GameController : MonoBehaviour {
     }
     public void CheckCollisions()
     {
-        bool nothing = false;
         for (int i = allPlayers.Count-1; i>= 0; i--)
         {
             GameObject o = (GameObject)allPlayers[i];
-            PlayerCollision playerCollision = o.GetComponent<PlayerCollision>();
-            
-            if (playerCollision.finished)
-            {
-                playerCollision.canMoveLeft = false;
-                playerCollision.canMoveRight = false;
-                playerCollision.canMoveUp = false;
-                playerCollision.canMoveDown = false;
-            }
-            else
-            {
-                Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref playerCollision.canMoveLeft);
-                Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref playerCollision.canMoveRight);
-                Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref playerCollision.canMoveUp);
-                Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref playerCollision.canMoveDown);
-                playerCollision.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entity2BlocksAwayOnRight = Tools.CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entity2BlocksAwayOnLeft = Tools.CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entity2BlocksAwayOnUp = Tools.CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing);
-                playerCollision.entity2BlocksAwayOnDown = Tools.CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing);
-
-            }
+            Tools.UpdateCollisionsData<PlayerCollision>(o);
             CheckUnder(o);
 
         }
@@ -433,51 +368,14 @@ public class GameController : MonoBehaviour {
         {
             
             GameObject o = (GameObject)allBlocks[i];
-            BlockController blockController = o.GetComponent<BlockController>();
-            //CheckUnder(o);
-            blockController.playerOnLeft = Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref blockController.canMoveLeft);
-            blockController.playerOnRight = Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref blockController.canMoveRight);
-            blockController.playerOnUp = Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref blockController.canMoveUp);
-            blockController.playerOnDown = Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref blockController.canMoveDown);
-
-            blockController.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entity2BlocksAwayOnRight = Tools.CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entity2BlocksAwayOnLeft = Tools.CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entity2BlocksAwayOnUp = Tools.CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing);
-            blockController.entity2BlocksAwayOnDown = Tools.CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing);
-
+            Tools.UpdateCollisionsData<BlockController>(o);
             CheckUnder(o);
         }
         for (int i = allEyeballs.Count - 1; i >= 0; i--)
         {
             
             GameObject o = (GameObject)allEyeballs[i];
-            EyeballController eyeballController = o.GetComponent<EyeballController>();
-            //CheckUnder(o);
-            
-            eyeballController.playerOnLeft = Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 20f, DirectionFacing.LEFT, ref nothing);
-            eyeballController.playerOnRight = Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 20f, DirectionFacing.RIGHT, ref nothing);
-            eyeballController.playerOnUp = Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 20f, DirectionFacing.UP, ref nothing);
-            eyeballController.playerOnDown = Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 20f, DirectionFacing.DOWN, ref nothing);
-
-            eyeballController.entityOnTopRight = Tools.CheckDirection(o.transform, 0.48f, 0.48f, new Vector2(1,1), 0.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entityOnTopLeft = Tools.CheckDirection(o.transform, -0.48f, 0.48f, new Vector2(-1, 1), 0.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entityOnBottomLeft = Tools.CheckDirection(o.transform, -0.48f, -0.48f, new Vector2(-1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entityOnBottomRight = Tools.CheckDirection(o.transform, 0.48f, -0.48f, new Vector2(1, -1), 0.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entity2BlocksAwayOnRight = Tools.CheckDirection(o.transform, 1.48f, 0f, Vector2.right, 1.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entity2BlocksAwayOnLeft = Tools.CheckDirection(o.transform, -1.48f, 0f, Vector2.left, 1.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entity2BlocksAwayOnUp = Tools.CheckDirection(o.transform, 0f, 1.48f, Vector2.up, 1.5f, DirectionFacing.NONE, ref nothing);
-            eyeballController.entity2BlocksAwayOnDown = Tools.CheckDirection(o.transform, 0f, -1.48f, Vector2.down, 1.5f, DirectionFacing.NONE, ref nothing);
-
-
-            Tools.CheckDirection(o.transform, -0.48f, 0f, Vector2.left, 0.5f, DirectionFacing.LEFT, ref eyeballController.canMoveLeft);
-            Tools.CheckDirection(o.transform, 0.48f, 0f, Vector2.right, 0.5f, DirectionFacing.RIGHT, ref eyeballController.canMoveRight);
-            Tools.CheckDirection(o.transform, 0f, 0.48f, Vector2.up, 0.5f, DirectionFacing.UP, ref eyeballController.canMoveUp);
-            Tools.CheckDirection(o.transform, 0f, -0.48f, Vector2.down, 0.5f, DirectionFacing.DOWN, ref eyeballController.canMoveDown);
-            //CheckUnder(o);
+            Tools.UpdateCollisionsData<EyeballController>(o);
         }
 
     }
@@ -569,8 +467,8 @@ public class GameController : MonoBehaviour {
             }
             if (condition)
             {
-                playerCollision.playerMovement.isMoving = true;
-                playerCollision.playerMovement.newPos += movVec;
+                playerCollision.isMoving = true;
+                playerCollision.newPos += movVec;
             }
             
         }
@@ -645,12 +543,11 @@ public class GameController : MonoBehaviour {
         {
             GameObject player = (GameObject)allPlayers[i];
             PlayerCollision playerCollision = player.GetComponent<PlayerCollision>();
-            PlayerMovement playerMovement = playerCollision.playerMovement;
 
             data.allPlayers_position[i] = Tools.Vector3ToFloatArray(player.transform.localPosition);
-            data.allPlayers_newPos[i] = Tools.Vector3ToFloatArray(playerMovement.newPos);
-            data.allPlayers_movementVector[i] = Tools.Vector3ToFloatArray(playerMovement.movementVec);
-            data.allPlayers_isMoving[i] = playerMovement.isMoving;
+            data.allPlayers_newPos[i] = Tools.Vector3ToFloatArray(playerCollision.newPos);
+            data.allPlayers_movementVector[i] = Tools.Vector3ToFloatArray(playerCollision.movementVec);
+            data.allPlayers_isMoving[i] = playerCollision.isMoving;
         }
         for (int i = 0; i < allButtons.Count; i++)
         {
@@ -728,7 +625,6 @@ public class GameController : MonoBehaviour {
         {
             GameObject player = (GameObject)allPlayers[i];
             PlayerCollision playerCollision = player.GetComponent<PlayerCollision>();
-            PlayerMovement playerMovement = playerCollision.playerMovement;
 
             Vector3 position = Tools.FloatArrayToVector3(dataToLoad.allPlayers_position[i]);
             Vector3 newPos = Tools.FloatArrayToVector3(dataToLoad.allPlayers_newPos[i]);
@@ -736,9 +632,9 @@ public class GameController : MonoBehaviour {
             bool isMoving = dataToLoad.allPlayers_isMoving[i];
 
             player.transform.localPosition = position;
-            playerMovement.newPos = newPos;
-            playerMovement.movementVec = movementVec;
-            playerMovement.isMoving = isMoving;
+            playerCollision.newPos = newPos;
+            playerCollision.movementVec = movementVec;
+            playerCollision.isMoving = isMoving;
             //Debug.Log(position);
             //Debug.Log(newPos);
         }

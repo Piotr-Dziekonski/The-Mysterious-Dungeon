@@ -321,12 +321,11 @@
     <Compile Include="Assets\Scripts\GateController.cs" />
     <Compile Include="Assets\Scripts\ItemController.cs" />
     <Compile Include="Assets\Scripts\LeverController.cs" />
-    <Compile Include="Assets\Scripts\LockController.cs" />
     <Compile Include="Assets\Scripts\PlayerCollision.cs" />
-    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\SaveData.cs" />
     <Compile Include="Assets\Scripts\Sound.cs" />
     <Compile Include="Assets\Scripts\TargetController.cs" />
+    <Compile Include="Assets\Scripts\Test.cs" />
     <Compile Include="Assets\Scripts\Utils.cs" />
     <Compile Include="Assets\Tilemap\Brick\Scripts\Ball.cs" />
     <Compile Include="Assets\Tilemap\Brick\Scripts\Brick.cs" />

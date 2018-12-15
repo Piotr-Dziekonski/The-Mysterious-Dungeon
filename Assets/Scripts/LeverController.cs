@@ -80,7 +80,7 @@ public class LeverController : MonoBehaviour {
         {
             if (hit.collider.tag == "Player")
             {
-                if (hit.collider.GetComponent<PlayerMovement>().isMoving == false)
+                if (hit.collider.GetComponent<PlayerCollision>().isMoving == false)
                 {
                     if (Input.GetAxisRaw("Horizontal") > 0)
                     {

@@ -12,7 +12,6 @@ public class ArrowController : MonoBehaviour {
         if (directionFacing == DirectionFacing.LEFT)
         {
             transform.Rotate(Vector3.forward * 180);
-
         }
         else if (directionFacing == DirectionFacing.UP)
         {
