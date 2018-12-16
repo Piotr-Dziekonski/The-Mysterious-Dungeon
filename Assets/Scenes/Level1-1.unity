@@ -327,6 +327,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 114165720590302262, guid: c699671c344ab7544a4793b386443b24,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c699671c344ab7544a4793b386443b24, type: 2}
   m_IsPrefabAsset: 0
@@ -10766,6 +10771,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114316948837109742, guid: da102bd56f4990c48a931fa950149f3c,
+        type: 2}
+      propertyPath: disappearOnZero
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da102bd56f4990c48a931fa950149f3c, type: 2}
   m_IsPrefabAsset: 0
@@ -11872,6 +11882,11 @@ Prefab:
       propertyPath: connectedButtons.Array.data[2]
       value: 
       objectReference: {fileID: 337195293}
+    - target: {fileID: 114316948837109742, guid: da102bd56f4990c48a931fa950149f3c,
+        type: 2}
+      propertyPath: disappearOnZero
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da102bd56f4990c48a931fa950149f3c, type: 2}
   m_IsPrefabAsset: 0

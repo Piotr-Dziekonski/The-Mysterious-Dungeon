@@ -5,51 +5,28 @@ using System.Linq;
 
 public class BlockController : MonoBehaviour
 {
-
-    public Rigidbody2D rb;
-    public bool canMoveRight, canMoveLeft, canMoveUp, canMoveDown;
+    [Header("Mechanics data")]
     public GameObject targetUnderBlock;
+    [Header("Movement data")]
+    public bool canMoveRight;
+    public bool canMoveLeft;
+    public bool canMoveUp;
+    public bool canMoveDown;
     public bool isMoving;
-    public bool isBeingPushed;
-    public Vector3 pos, movementVec;
-    public bool isAround;
-    public GameObject playerOnLeft, playerOnRight, playerOnUp, playerOnDown;
+    public Vector3 newPos, movementVec;
+    [Header("Detected collisions")]
+    public GameObject playerOnLeft;
+    public GameObject playerOnRight;
+    public GameObject playerOnUp;
+    public GameObject playerOnDown;
+    public GameObject entityOnTopRight;
+    public GameObject entityOnTopLeft;
+    public GameObject entityOnBottomRight;
+    public GameObject entityOnBottomLeft;
+    public GameObject entity2BlocksAwayOnRight;
+    public GameObject entity2BlocksAwayOnLeft;
+    public GameObject entity2BlocksAwayOnUp;
+    public GameObject entity2BlocksAwayOnDown;
 
-
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        canMoveRight = true;
-        canMoveLeft = true;
-        canMoveUp = true;
-        canMoveDown = true;
-    }
-
-    void Update()
-    {
-       
-        /*else if (CheckIfUnderSelf("Button") != null)
-        {
-            if (targetUnderBlock == null)
-            {
-                targetUnderBlock = CheckIfUnderSelf("Button");
-            }
-            targetUnderBlock.GetComponent<ButtonController>().pressed = true;
-            targetUnderBlock.GetComponent<ButtonController>().standingPlayer = gameObject;
-        }*/
-
-
-
-        /*if (CheckIfUnderSelf("Button") == null)
-        {
-            if (targetUnderBlock != null && targetUnderBlock.GetComponent<ButtonController>().resetable == true)
-            {
-                targetUnderBlock.GetComponent<ButtonController>().pressed = false;
-                targetUnderBlock.GetComponent<ButtonController>().standingPlayer = null;
-            }
-            targetUnderBlock = null;
-        }*/
-
-    }
 }
 

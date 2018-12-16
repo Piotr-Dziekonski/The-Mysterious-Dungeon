@@ -31,6 +31,7 @@ public class GateController : MonoBehaviour {
 
         buttonsPressed = 0;
         notResetableButtonsPressed = 0;
+
         foreach (GameObject g in connectedTargets)
         {
             if (g.GetComponent<TargetController>().pressed)
