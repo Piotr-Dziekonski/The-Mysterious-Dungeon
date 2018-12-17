@@ -8,6 +8,7 @@ public class ButtonController : MonoBehaviour {
     public bool resetable;
     private Animator animator;
     public bool allowSound = false;
+    public bool orButton;
     
 	// Use this for initialization
 	void Awake () {

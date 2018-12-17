@@ -11,6 +11,7 @@ public class GateController : MonoBehaviour {
     private GameObject playerInGate;
     public int buttonsPressed = 0, notResetableButtonsPressed = 0;
     private Animator animator;
+    bool orButtonpressed;
     //public GateController defaultController;
 
     
@@ -19,11 +20,12 @@ public class GateController : MonoBehaviour {
     void Start () {
         animator = GetComponent<Animator>();
         isOpen = false;
+        orButtonpressed = false;
         //defaultController = this;
     }
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void Update () {
         if(isOpen)
             animator.SetBool("isOpen", true);
         else
@@ -31,6 +33,7 @@ public class GateController : MonoBehaviour {
 
         buttonsPressed = 0;
         notResetableButtonsPressed = 0;
+        orButtonpressed = false;
 
         foreach (GameObject g in connectedTargets)
         {
@@ -42,36 +45,33 @@ public class GateController : MonoBehaviour {
         }
         foreach (GameObject g in connectedButtons)
         {
-            if (g.GetComponent<ButtonController>().pressed)
+            ButtonController controller = g.GetComponent<ButtonController>();
+            
+            if (controller.pressed)
             {
+                if (controller.orButton)
+                {
+                    orButtonpressed = true;
+                }
+
                 buttonsPressed++;
-                if (!g.GetComponent<ButtonController>().resetable)
+                if (!controller.resetable)
                 {
                     notResetableButtonsPressed++;
                 }
             }
             
         }
-        if (buttonsPressed == connectedButtons.Length + connectedTargets.Length && connectedButtons.Length + connectedTargets.Length != 0)
+        if ((buttonsPressed == connectedButtons.Length + connectedTargets.Length && connectedButtons.Length + connectedTargets.Length != 0) || orButtonpressed)
         {
-            //Destroy(gameObject);
-            GetComponent<CircleCollider2D>().enabled = false;
-            GetComponent<SpriteRenderer>().enabled = false;
             isOpen = true;
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            gameObject.GetComponent<CircleCollider2D>().enabled = false;
+
         }
         else if (buttonsPressed != connectedButtons.Length + connectedTargets.Length && connectedButtons.Length + connectedTargets.Length != 0)
         {
             isOpen = false;
-            GetComponent<CircleCollider2D>().enabled = true;
-            GetComponent<SpriteRenderer>().enabled = true;
-        }
-        if (isOpen)
-        {
-            gameObject.GetComponent<SpriteRenderer>().enabled = false;
-            gameObject.GetComponent<CircleCollider2D>().enabled = false;
-        }
-        else
-        {
             gameObject.GetComponent<SpriteRenderer>().enabled = true;
             gameObject.GetComponent<CircleCollider2D>().enabled = true;
         }
