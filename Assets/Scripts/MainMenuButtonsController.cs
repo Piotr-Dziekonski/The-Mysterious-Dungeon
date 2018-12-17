@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class MainMenuButtonsController : MonoBehaviour {
 
@@ -12,6 +13,11 @@ public class MainMenuButtonsController : MonoBehaviour {
         newGame.onClick.AddListener(OnNewGameButtonClick);
         loadGame.onClick.AddListener(OnLoadGameButtonClick);
         exit.onClick.AddListener(OnExitButtonClick);
+
+        if ((SceneManager.GetActiveScene().name == "MainMenu") && !(File.Exists(Application.persistentDataPath + "/save.gd")))
+        {
+            GameObject.Find("LoadGame").GetComponentInParent<Image>().color = Color.gray;
+        }
     }
 	
 	// Update is called once per frame

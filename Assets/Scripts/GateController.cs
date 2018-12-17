@@ -12,7 +12,9 @@ public class GateController : MonoBehaviour {
     public int buttonsPressed = 0, notResetableButtonsPressed = 0;
     private Animator animator;
     bool orButtonpressed;
-    //public GateController defaultController;
+
+    private SpriteRenderer sprite;
+    private new CircleCollider2D collider;
 
     
 
@@ -21,7 +23,8 @@ public class GateController : MonoBehaviour {
         animator = GetComponent<Animator>();
         isOpen = false;
         orButtonpressed = false;
-        //defaultController = this;
+        sprite = gameObject.GetComponent<SpriteRenderer>();
+        collider = gameObject.GetComponent<CircleCollider2D>();
     }
 	
 	// Update is called once per frame
@@ -65,16 +68,26 @@ public class GateController : MonoBehaviour {
         if ((buttonsPressed == connectedButtons.Length + connectedTargets.Length && connectedButtons.Length + connectedTargets.Length != 0) || orButtonpressed)
         {
             isOpen = true;
-            gameObject.GetComponent<SpriteRenderer>().enabled = false;
-            gameObject.GetComponent<CircleCollider2D>().enabled = false;
+
 
         }
         else if (buttonsPressed != connectedButtons.Length + connectedTargets.Length && connectedButtons.Length + connectedTargets.Length != 0)
         {
             isOpen = false;
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
-            gameObject.GetComponent<CircleCollider2D>().enabled = true;
+
         }
+        if (isOpen)
+        {
+            sprite.enabled = false;
+            collider.enabled = false;
+        }
+        else
+        {
+            sprite.enabled = true;
+            collider.enabled = true;
+        }
+
+
     }
     
 }

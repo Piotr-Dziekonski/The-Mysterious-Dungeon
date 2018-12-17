@@ -3770,6 +3770,11 @@ Prefab:
       propertyPath: completeLevelUI
       value: 
       objectReference: {fileID: 740579570}
+    - target: {fileID: 114784970330067456, guid: c0c6a817dfbbaed428c410c969b1687c,
+        type: 2}
+      propertyPath: messageUI
+      value: 
+      objectReference: {fileID: 669178009}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c0c6a817dfbbaed428c410c969b1687c, type: 2}
   m_IsPrefabAsset: 0
@@ -3940,6 +3945,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a50e6170648ca24583522f0bd2a1f86, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &669178009 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1653955916300322, guid: 91cc01f750d652740a4312e59eb0181e,
+    type: 2}
+  m_PrefabInternal: {fileID: 606239186}
 --- !u!1 &702158599
 GameObject:
   m_ObjectHideFlags: 0
@@ -10451,6 +10461,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 1245929065}
     m_Modifications:
+    - target: {fileID: 114088115392660480, guid: 2b2ada1a3afffba4c871aad9c179cdc3,
+        type: 2}
+      propertyPath: neededBlocks.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4015195386001534, guid: 2b2ada1a3afffba4c871aad9c179cdc3, type: 2}
       propertyPath: m_LocalPosition.x
       value: -6.5
@@ -10486,6 +10501,11 @@ Prefab:
     - target: {fileID: 114088115392660480, guid: 2b2ada1a3afffba4c871aad9c179cdc3,
         type: 2}
       propertyPath: neededBlock
+      value: 
+      objectReference: {fileID: 2079331487}
+    - target: {fileID: 114088115392660480, guid: 2b2ada1a3afffba4c871aad9c179cdc3,
+        type: 2}
+      propertyPath: neededBlocks.Array.data[0]
       value: 
       objectReference: {fileID: 2079331487}
     m_RemovedComponents: []
@@ -10786,6 +10806,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 1245929065}
     m_Modifications:
+    - target: {fileID: 114088115392660480, guid: a9791c0bf5ba74541ae62cab6ffac0e2,
+        type: 2}
+      propertyPath: neededBlocks.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4015195386001534, guid: a9791c0bf5ba74541ae62cab6ffac0e2, type: 2}
       propertyPath: m_LocalPosition.x
       value: 7.5
@@ -10821,6 +10846,11 @@ Prefab:
     - target: {fileID: 114088115392660480, guid: a9791c0bf5ba74541ae62cab6ffac0e2,
         type: 2}
       propertyPath: neededBlock
+      value: 
+      objectReference: {fileID: 1986393712}
+    - target: {fileID: 114088115392660480, guid: a9791c0bf5ba74541ae62cab6ffac0e2,
+        type: 2}
+      propertyPath: neededBlocks.Array.data[0]
       value: 
       objectReference: {fileID: 1986393712}
     m_RemovedComponents: []

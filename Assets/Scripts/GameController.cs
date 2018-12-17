@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour {
     public bool levelCompleted = false;
     public static ItemController.ItemType[] inventory = new ItemController.ItemType[10];
     public GameObject completeLevelUI;
+    public GameObject messageUI;
 
 
     private static SaveData dataToLoad;
@@ -61,44 +62,59 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        CheckCollisions();
-        if (Input.GetAxisRaw("Vertical") > 0 && !cooldown)
+        if (!(SceneManager.GetActiveScene().name == "Steering") && !(SceneManager.GetActiveScene().name == "MainMenu"))
         {
-            cooldown = true;
-            SetNewPositions(Vector3.up);
-        }
-        else if (Input.GetAxisRaw("Horizontal") < 0 && !cooldown)
-        {
-            cooldown = true;
-            SetNewPositions(Vector3.left);
-        }
-        else if (Input.GetAxisRaw("Vertical") < 0 && !cooldown)
-        {
-            cooldown = true;
-            SetNewPositions(Vector3.down);
-        }
-        else if (Input.GetAxisRaw("Horizontal") > 0 && !cooldown)
-        {
-            cooldown = true;
-            SetNewPositions(Vector3.right);
-        }
-        else if (Input.GetKey("r"))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        else if (Input.GetKeyDown("["))
-        {
-            SaveGame();
-        }
-        else if (Input.GetKeyDown("]"))
-        {
-            LoadGame();
-        }
-        SetNewNPCPositions();
-        MoveObjects();
+            CheckCollisions();
 
-        cooldown = false;
+            if (Input.GetAxisRaw("Vertical") > 0 && !cooldown)
+            {
+                cooldown = true;
+                SetNewPositions(Vector3.up);
+            }
+            else if (Input.GetAxisRaw("Horizontal") < 0 && !cooldown)
+            {
+                cooldown = true;
+                SetNewPositions(Vector3.left);
+            }
+            else if (Input.GetAxisRaw("Vertical") < 0 && !cooldown)
+            {
+                cooldown = true;
+                SetNewPositions(Vector3.down);
+            }
+            else if (Input.GetAxisRaw("Horizontal") > 0 && !cooldown)
+            {
+                cooldown = true;
+                SetNewPositions(Vector3.right);
+            }
+            else if (Input.GetKey("r"))
+            {
+                RestartLevel();
+            }
+            else if (Input.GetKeyDown("x"))
+            {
+                SaveGame();
+            }
+            else if (Input.GetKeyDown("v"))
+            {
+                LoadGame();
+            }
 
+            SetNewNPCPositions();
+            MoveObjects();
+
+            cooldown = false;
+        }
+        else if(!(SceneManager.GetActiveScene().name == "MainMenu"))
+        {
+            if (Input.GetKeyDown("space"))
+            {
+                SceneManager.LoadScene("Level1-0");
+            }
+        }
+    }
+    public static void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     private void SetNewNPCPositions()
     {
@@ -502,7 +518,7 @@ public class GameController : MonoBehaviour {
         //Debug.Log("LEVEL COMPLETED");
         completeLevelUI.SetActive(true);
         levelCompleted = true;
-        completedLevels[activeLevelNumber] = true;
+        completedLevels[activeLevelNumber-1] = true;
         
     }
     public static void SaveGame()
@@ -522,6 +538,12 @@ public class GameController : MonoBehaviour {
             allPlayers_movementVector = new float[allPlayers.Count][],
             allPlayers_isMoving = new bool[allPlayers.Count],
             allPlayers_directionFacing = new DirectionFacing[allPlayers.Count],
+            allEyeballs_position = new float[allEyeballs.Count][],
+            allEyeballs_newPos = new float[allEyeballs.Count][],
+            allEyeballs_isMoving = new bool[allEyeballs.Count],
+            allEyeballs_turningCRRunning = new bool[allEyeballs.Count],
+            allEyeballs_moveCRRunning = new bool[allEyeballs.Count],
+            allEyeballs_directionFacing = new DirectionFacing[allEyeballs.Count],
             allButtons_pressed = new bool[allButtons.Count],
             allLevers_stateOn = new bool[allLevers.Count],
             allBlocks_position = new float[allBlocks.Count][],
@@ -548,6 +570,19 @@ public class GameController : MonoBehaviour {
             data.allPlayers_newPos[i] = Tools.Vector3ToFloatArray(playerCollision.newPos);
             data.allPlayers_movementVector[i] = Tools.Vector3ToFloatArray(playerCollision.movementVec);
             data.allPlayers_isMoving[i] = playerCollision.isMoving;
+            data.allPlayers_directionFacing[i] = playerCollision.directionFacing;
+        }
+        for (int i = 0; i < allEyeballs.Count; i++)
+        {
+            GameObject eyeball = (GameObject)allEyeballs[i];
+            EyeballController eyeballController = eyeball.GetComponent<EyeballController>();
+
+            data.allEyeballs_position[i] = Tools.Vector3ToFloatArray(eyeball.transform.localPosition);
+            data.allEyeballs_newPos[i] = Tools.Vector3ToFloatArray(eyeballController.newPos);
+            data.allEyeballs_isMoving[i] = eyeballController.isMoving;
+            data.allEyeballs_turningCRRunning[i] = eyeballController.isMoving;
+            data.allEyeballs_moveCRRunning[i] = eyeballController.isMoving;
+            data.allEyeballs_directionFacing[i] = eyeballController.directionFacing;
         }
         for (int i = 0; i < allButtons.Count; i++)
         {
@@ -603,6 +638,25 @@ public class GameController : MonoBehaviour {
 
         bf.Serialize(file, data);
         file.Close();
+
+        if (instance.messageUI.GetComponent<Animator>().GetBool("loaded"))
+        {
+            instance.messageUI.GetComponent<Animator>().SetBool("loaded", false);
+        }
+        if (instance.messageUI.GetComponent<Animator>().GetBool("saved"))
+        {
+            instance.messageUI.GetComponent<Animator>().SetBool("saved", false);
+            instance.messageUI.GetComponent<Animator>().SetBool("saved", true);
+        }
+        else
+        {
+            instance.messageUI.GetComponent<Animator>().SetBool("saved", true);
+        }
+        
+
+
+
+
     }
     public static void LoadGame()
     {
@@ -635,8 +689,25 @@ public class GameController : MonoBehaviour {
             playerCollision.newPos = newPos;
             playerCollision.movementVec = movementVec;
             playerCollision.isMoving = isMoving;
+            playerCollision.directionFacing = dataToLoad.allPlayers_directionFacing[i];
             //Debug.Log(position);
             //Debug.Log(newPos);
+        }
+        for (int i = 0; i < dataToLoad.allEyeballs_position.Length; i++)
+        {
+            GameObject eyeball = (GameObject)allEyeballs[i];
+            EyeballController eyeballController = eyeball.GetComponent<EyeballController>();
+
+            Vector3 position = Tools.FloatArrayToVector3(dataToLoad.allEyeballs_position[i]);
+            Vector3 newPos = Tools.FloatArrayToVector3(dataToLoad.allEyeballs_newPos[i]);
+            bool isMoving = dataToLoad.allEyeballs_isMoving[i];
+            eyeballController.turningCRRunning = dataToLoad.allEyeballs_turningCRRunning[i];
+            eyeballController.moveCRRunning = dataToLoad.allEyeballs_moveCRRunning[i];
+            eyeballController.directionFacing= dataToLoad.allEyeballs_directionFacing[i];
+
+            eyeball.transform.localPosition = position;
+            eyeballController.newPos = newPos;
+            eyeballController.isMoving = isMoving;
         }
         for (int i = 0; i < dataToLoad.allButtons_pressed.Length; i++)
         {
@@ -687,5 +758,18 @@ public class GameController : MonoBehaviour {
         }
         dataToLoad = null;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (instance.messageUI.GetComponent<Animator>().GetBool("saved"))
+        {
+            instance.messageUI.GetComponent<Animator>().SetBool("saved", false);
+        }
+        if (instance.messageUI.GetComponent<Animator>().GetBool("loaded"))
+        {
+            instance.messageUI.GetComponent<Animator>().SetBool("loaded", false);
+            instance.messageUI.GetComponent<Animator>().SetBool("loaded", true);
+        }
+        else
+        {
+            instance.messageUI.GetComponent<Animator>().SetBool("loaded", true);
+        }
     }
 }

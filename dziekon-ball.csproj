@@ -306,21 +306,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ArrowController.cs" />
-    <Compile Include="Assets\EyeballController.cs" />
-    <Compile Include="Assets\LevelComplete.cs" />
-    <Compile Include="Assets\LevelEntranceController.cs" />
-    <Compile Include="Assets\LoadMenuButtonsController.cs" />
-    <Compile Include="Assets\MainMenuButtonsController.cs" />
+    <Compile Include="Assets\SaveOrLoad.cs" />
+    <Compile Include="Assets\SaveOrLoadAnimationController.cs" />
+    <Compile Include="Assets\Scripts\ArrowController.cs" />
     <Compile Include="Assets\Scripts\AudioManager.cs" />
     <Compile Include="Assets\Scripts\BlockController.cs" />
     <Compile Include="Assets\Scripts\ButtonController.cs" />
     <Compile Include="Assets\Scripts\CounterController.cs" />
     <Compile Include="Assets\Scripts\DoorController.cs" />
+    <Compile Include="Assets\Scripts\EyeballController.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\GateController.cs" />
     <Compile Include="Assets\Scripts\ItemController.cs" />
+    <Compile Include="Assets\Scripts\LevelComplete.cs" />
+    <Compile Include="Assets\Scripts\LevelEntranceController.cs" />
     <Compile Include="Assets\Scripts\LeverController.cs" />
+    <Compile Include="Assets\Scripts\LoadMenuButtonsController.cs" />
+    <Compile Include="Assets\Scripts\MainMenuButtonsController.cs" />
     <Compile Include="Assets\Scripts\PlayerCollision.cs" />
     <Compile Include="Assets\Scripts\SaveData.cs" />
     <Compile Include="Assets\Scripts\Sound.cs" />

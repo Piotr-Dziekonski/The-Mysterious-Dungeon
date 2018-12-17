@@ -53,4 +53,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelCompleted: 0
   completeLevelUI: {fileID: 0}
-  currentInv: 
+  messageUI: {fileID: 0}

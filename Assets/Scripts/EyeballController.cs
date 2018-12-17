@@ -67,6 +67,7 @@ public class EyeballController : MonoBehaviour {
                 if (directionFacing == DirectionFacing.LEFT && playerCollision.directionFacing == DirectionFacing.RIGHT)
                 {
                     Debug.Log("REKT");
+                    GameController.RestartLevel();
                 }
                 else if(directionFacing != DirectionFacing.LEFT)
                 {
@@ -81,6 +82,7 @@ public class EyeballController : MonoBehaviour {
                 if (directionFacing == DirectionFacing.RIGHT && playerCollision.directionFacing == DirectionFacing.LEFT)
                 {
                     Debug.Log("REKT");
+                    GameController.RestartLevel();
                 }
                 else if (directionFacing != DirectionFacing.RIGHT)
                 {
@@ -95,6 +97,7 @@ public class EyeballController : MonoBehaviour {
                 if (directionFacing == DirectionFacing.UP && playerCollision.directionFacing == DirectionFacing.DOWN)
                 {
                     Debug.Log("REKT");
+                    GameController.RestartLevel();
                 }
                 else if (directionFacing != DirectionFacing.UP)
                 {
@@ -109,6 +112,7 @@ public class EyeballController : MonoBehaviour {
                 if (directionFacing == DirectionFacing.DOWN && playerCollision.directionFacing == DirectionFacing.UP)
                 {
                     Debug.Log("REKT");
+                    GameController.RestartLevel();
                 }
                 else if (directionFacing != DirectionFacing.DOWN)
                 {

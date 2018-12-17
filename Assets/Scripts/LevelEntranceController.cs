@@ -14,7 +14,7 @@ public class LevelEntranceController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        if (GameController.completedLevels[levelNumber] == true)
+        if (GameController.completedLevels[levelNumber-1] == true)
         {
             completed = true;
             //gameObject.SetActive(false);
@@ -25,7 +25,7 @@ public class LevelEntranceController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //Debug.Log(GameController.completedLevels[levelNumber]);
-        if (GameController.completedLevels[levelNumber] == true)
+        if (GameController.completedLevels[levelNumber-1] == true)
         {
             completed = true;
             //gameObject.SetActive(false);

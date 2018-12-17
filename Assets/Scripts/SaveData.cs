@@ -23,10 +23,19 @@ public class SaveData {
 
     /*
      * 
+     * EYEBALLS DATAS
+     * 
+     * */
+    public float[][] allEyeballs_position, allEyeballs_newPos;
+    public bool[] allEyeballs_isMoving, allEyeballs_turningCRRunning, allEyeballs_moveCRRunning;
+    public DirectionFacing[] allEyeballs_directionFacing;
+
+    /*
+     * 
      * BUTTONS DATAS
      * 
      * */
-     
+
     public bool[] allButtons_pressed;
 
     /*
