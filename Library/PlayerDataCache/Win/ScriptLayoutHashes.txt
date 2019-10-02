@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-C:/Users/Piotr Dziekoński/Desktop/The-Mysterious-Dungeon-experimental/Build/Ball.exe
+C:/Projects/The-Mysterious-Dungeon/Build/Ball.exe
 SceneListBegin?
 Assets/Scenes/MainMenu.unity
 Assets/Scenes/Steering.unity

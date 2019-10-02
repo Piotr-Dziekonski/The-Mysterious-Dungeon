@@ -11527,6 +11527,11 @@ Prefab:
       propertyPath: completeLevelUI
       value: 
       objectReference: {fileID: 1471362027}
+    - target: {fileID: 114784970330067456, guid: c0c6a817dfbbaed428c410c969b1687c,
+        type: 2}
+      propertyPath: messageUI
+      value: 
+      objectReference: {fileID: 1548369372}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c0c6a817dfbbaed428c410c969b1687c, type: 2}
   m_IsPrefabAsset: 0
@@ -11691,6 +11696,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91cc01f750d652740a4312e59eb0181e, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1548369372 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1653955916300322, guid: 91cc01f750d652740a4312e59eb0181e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1548369371}
 --- !u!1001 &1593340607
 Prefab:
   m_ObjectHideFlags: 0
