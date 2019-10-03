@@ -98,6 +98,18 @@ public class GameController : MonoBehaviour {
             {
                 LoadGame();
             }
+            else if (!(SceneManager.GetActiveScene().name == "MainMenu") && !(SceneManager.GetActiveScene().name == "Steering") && !(SceneManager.GetActiveScene().name == "Level1-0")) // SKIPPING CURRENT LEVEL
+            {
+                if (Input.GetKeyDown("o"))
+                {
+                    GameController.instance.LevelCompleted();
+                }
+                else if (Input.GetKeyDown(KeyCode.Escape)) // RETURN TO HUB
+                {
+                    SceneManager.LoadScene("Level1-0");
+                }
+            
+            }
 
             SetNewNPCPositions();
             MoveObjects();
@@ -114,6 +126,7 @@ public class GameController : MonoBehaviour {
     }
     public static void RestartLevel()
     {
+        inventory = new ItemController.ItemType[10];
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     private void SetNewNPCPositions()
